@@ -19,25 +19,19 @@ const breadcrumbs: BreadcrumbItem[] = [
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <div class="grid auto-rows-min gap-4 md:grid-cols-3">
+            <div class="button-container">
                 <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <Button variant="outline" class="absolute top-4 right-4">
-                        <HousePlus fill="white" />
-                        Add a Facility
-                    </Button>
+                    <div class="flex p-8 gap-8 h-full">
+                        <Button variant="outline" class="w-48 h-48 flex flex-col items-center justify-center gap-2">
+                            <HousePlus fill="white" class="!w-[6rem] !h-[6rem]" />
+                            <span>Add a Facility</span>
+                        </Button>
+                        <Button variant="outline" class="w-48 h-48 flex flex-col items-center justify-center gap-2">
+                            <UserPlus fill="white" class="!w-[6rem] !h-[6rem]"/>
+                            Add a Patient
+                        </Button>
+                    </div>
                 </div>
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <Button variant="outline" class="absolute top-4 right-4">
-                        <UserPlus fill="white" />
-                        Add a Patient
-                    </Button>
-                </div>
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
-                </div>
-            </div>
-            <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-                <PlaceholderPattern />
             </div>
         </div>
     </AppLayout>
