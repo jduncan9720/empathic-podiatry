@@ -13,43 +13,17 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const data = ref<Facility[]>([])
+const facilityData = ref<Facility[]>([])
 
-async function getData(): Promise<Facility[]> {
-    // Fetch data from your API here.
-    return [
-        {
-            id: '728ed52f',
-            name: 'Old Folks Family Living Center',
-            address_one: '350 Main St',
-            address_two: 'Suite 200',
-            city: 'Heber City',
-            state: 'Utah',
-            zip: '84032',
-            phone_one: '435-555-5555',
-            phone_two: '435-655-9988',
-            email: 'facility@facility.com',
-            contact_name: 'John Smith',
-        },
-        {
-            id: '728ed52f',
-            name: 'Really Old Folks House of Fun',
-            address_one: '800 S. 500 W.',
-            address_two: '',
-            city: 'Provo',
-            state: 'Utah',
-            zip: '84099',
-            phone_one: '435-345-7787',
-            phone_two: '',
-            email: 'facility2@facility.com',
-            contact_name: 'Jane Doe',
-        },
-        // ...
-    ]
+async function getFacilityData(): Promise<Facility[]> {
+    const response = await fetch('/api/facilities');
+    if (!response.ok) throw new Error('Failed to fetch facilities');
+    return await response.json();
 }
 
 onMounted(async () => {
-    data.value = await getData()
+    facilityData.value = await getFacilityData()
+    console.log('Patient Data:', facilityData.value);
 })
 
 </script>
@@ -61,7 +35,7 @@ onMounted(async () => {
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
                 <div class="container py-10 mx-auto">
-                    <DataTable :columns="facility_columns" :data="data" />
+                    <DataTable :columns="facility_columns" :data="facilityData" />
                 </div>
             </div>
         </div>

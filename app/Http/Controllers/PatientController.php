@@ -16,13 +16,13 @@ class PatientController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'date_of_birth' => 'required|string',
-            'room_number' => 'required|string|max:50',
-            'type_of_consent' => 'required|string|max:255',
-            'primary_insurance' => 'required|string|max:255',
-            'date_last_seen' => 'required|date',
-            'status' => 'required|string|max:50',
+            'name'              => 'string|max:255|required',
+            'date_of_birth'     => 'string|nullable',
+            'room_number'       => 'string|max:50|nullable',
+            'type_of_consent'   => 'string|max:255|nullable',
+            'primary_insurance' => 'string|max:255|nullable',
+            'date_last_seen'    => 'date|nullable',
+            'status'            => 'string|max:50|nullable',
         ]);
 
         $patient = Patient::create($validated);

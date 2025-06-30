@@ -44,7 +44,6 @@ function handleClose() {
                     v-model="form.date_of_birth"
                     type="date"
                     placeholder="Date of Birth (YYYY-MM-DD)"
-                    required
                     class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
             </div>
@@ -55,7 +54,6 @@ function handleClose() {
                     v-model="form.room_number"
                     type="text"
                     placeholder="Room Number"
-                    required
                     class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
             </div>
@@ -66,7 +64,6 @@ function handleClose() {
                     v-model="form.type_of_consent"
                     type="text"
                     placeholder="Type of Consent"
-                    required
                     class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
             </div>
@@ -77,7 +74,6 @@ function handleClose() {
                     v-model="form.primary_insurance"
                     type="text"
                     placeholder="Primary Insurance"
-                    required
                     class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
             </div>
@@ -88,7 +84,6 @@ function handleClose() {
                     v-model="form.date_last_seen"
                     type="date"
                     placeholder="Date Last Seen (YYYY-MM-DD)"
-                    required
                     class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
             </div>
@@ -99,7 +94,6 @@ function handleClose() {
                     v-model="form.status"
                     type="text"
                     placeholder="Status"
-                    required
                     class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
             </div>

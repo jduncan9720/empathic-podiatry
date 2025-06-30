@@ -47,7 +47,6 @@ function handleClose() {
                     v-model="form.address_one"
                     type="text"
                     placeholder="Address One"
-                    required
                     class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
             </div>
@@ -68,7 +67,6 @@ function handleClose() {
                     v-model="form.city"
                     type="text"
                     placeholder="City"
-                    required
                     class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
             </div>
@@ -89,7 +87,6 @@ function handleClose() {
                     v-model="form.zip"
                     type="text"
                     placeholder="Zip Code"
-                    required
                     class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
             </div>
@@ -100,7 +97,6 @@ function handleClose() {
                     v-model="form.phone_one"
                     type="text"
                     placeholder="Phone One"
-                    required
                     class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
             </div>
