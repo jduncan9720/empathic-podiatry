@@ -29,7 +29,7 @@ async function getData(): Promise<Facility[]> {
             phone_one: '435-555-5555',
             phone_two: '435-655-9988',
             email: 'facility@facility.com',
-            contact: 'John Smith',
+            contact_name: 'John Smith',
         },
         {
             id: '728ed52f',
@@ -42,7 +42,7 @@ async function getData(): Promise<Facility[]> {
             phone_one: '435-345-7787',
             phone_two: '',
             email: 'facility2@facility.com',
-            contact: 'Jane Doe',
+            contact_name: 'Jane Doe',
         },
         // ...
     ]

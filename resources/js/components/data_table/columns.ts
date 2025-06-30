@@ -102,7 +102,7 @@ export interface Facility {
     phone_one: string
     phone_two: string
     email: string
-    contact: string
+    contact_name: string
 }
 
 export const facility_columns: ColumnDef<Facility>[] = [
@@ -193,11 +193,11 @@ export const facility_columns: ColumnDef<Facility>[] = [
         },
     },
     {
-        accessorKey: 'contact',
-        header: () => h('div', {}, 'Contact'),
+        accessorKey: 'contact_name',
+        header: () => h('div', {}, 'Contact Name'),
         cell: ({ row }) => {
-            const contact = row.getValue('contact')
-            return h('div', { class: 'font-medium' }, String(contact))
+            const contactName = row.getValue('contact_name')
+            return h('div', { class: 'font-medium' }, String(contactName))
         },
     },
     {
