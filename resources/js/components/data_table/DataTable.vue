@@ -52,7 +52,7 @@ const table = useVueTable({
     <div>
         <div class="flex items-center py-4">
             <Input class="max-w-sm" placeholder="Search name..."
-                   :model-value="table.getColumn('email')?.getFilterValue() as string"
+                   :model-value="table.getColumn('name')?.getFilterValue() as string"
                    @update:model-value=" table.getColumn('name')?.setFilterValue($event)" />
         </div>
         <div class="border rounded-md">

@@ -11,14 +11,11 @@ class Patient extends Model
 
     protected $fillable = [
         'name',
-        'address_one',
-        'address_two',
-        'city',
-        'state',
-        'zip',
-        'phone_one',
-        'phone_two',
-        'email',
-        'contact_name',
+        'date_of_birth',
+        'room_number',
+        'type_of_consent',
+        'primary_insurance',
+        'date_last_seen',
+        'status',
     ];
 }

@@ -18,6 +18,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const isPatientDialogOpen = ref(false);
 const isFacilityDialogOpen = ref(false);
+const isPatientSavedDialogOpen = ref(false);
 
 function openAddPatientDialog() {
     isPatientDialogOpen.value = true;
@@ -33,9 +34,30 @@ function closePatientDialog() {
 function closeFacilityDialog() {
     isPatientDialogOpen.value = false;
 }
-function submitPatientForm(form: { name: string; date_of_birth: string }) {
-    console.log('Submitted patient:', form);
+async function submitPatientForm(form: {
+    name: string;
+    date_of_birth: string;
+    room_number: string;
+    type_of_consent: string;
+    primary_insurance: string;
+    date_last_seen: string;
+    status: string;
+}) {
+    console.log('Submitted Patient:', form);
+    const response = await fetch('/api/patients', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify(form),
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to submit patient');
+    }
     closePatientDialog();
+    isPatientSavedDialogOpen.value = true;
 }
 
 function submitFacilityForm(form: { name: string; date_of_birth: string }) {
@@ -77,6 +99,16 @@ function submitFacilityForm(form: { name: string; date_of_birth: string }) {
                         <h2>Add Facility</h2>
                     </DialogHeader>
                     <FacilityForm @submit="submitFacilityForm" @close="closeFacilityDialog" />
+                </DialogContent>
+            </Dialog>
+            <Dialog v-model:open="isPatientSavedDialogOpen">
+                <DialogContent>
+                    <DialogHeader>
+                        <h2>Patient saved</h2>
+                    </DialogHeader>
+                    <div class="flex justify-end">
+                        <Button @click="isPatientSavedDialogOpen = false">OK</Button>
+                    </div>
                 </DialogContent>
             </Dialog>
         </div>

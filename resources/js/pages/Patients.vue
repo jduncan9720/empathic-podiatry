@@ -13,37 +13,17 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const data = ref<Patient[]>([])
+const patientData = ref<Patient[]>([])
 
-async function getData(): Promise<Patient[]> {
-    // Fetch data from your API here.
-    return [
-        {
-            id: '728ed52f',
-            name: 'John Doe',
-            date_of_birth: '1978-10-05',
-            room_number: '307',
-            type_of_consent: 'family',
-            primary_insurance: 'Blue Cross Blue Shield',
-            date_last_seen: '2023-10-01',
-            status: 'active',
-        },
-        {
-            id: '828f',
-            name: 'Jane Doe',
-            date_of_birth: '1978-09-05',
-            room_number: '503',
-            type_of_consent: 'parent',
-            primary_insurance: 'Aetna',
-            date_last_seen: '2023-11-04',
-            status: 'active',
-        }
-        // ...
-    ]
+async function getPatientData(): Promise<Patient[]> {
+    const response = await fetch('/api/patients');
+    if (!response.ok) throw new Error('Failed to fetch patients');
+    return await response.json();
 }
 
 onMounted(async () => {
-    data.value = await getData()
+    patientData.value = await getPatientData()
+    console.log('Patient Data:', patientData.value);
 })
 
 </script>
@@ -55,7 +35,7 @@ onMounted(async () => {
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
                 <div class="container py-10 mx-auto">
-                    <DataTable :columns="patient_columns" :data="data" />
+                    <DataTable :columns="patient_columns" :data="patientData" />
                 </div>
             </div>
         </div>
