@@ -21,6 +21,10 @@ async function getPatientData(): Promise<Patient[]> {
     return await response.json();
 }
 
+async function refreshPatientData() {
+    patientData.value = await getPatientData();
+}
+
 onMounted(async () => {
     patientData.value = await getPatientData()
     console.log('Patient Data:', patientData.value);
@@ -35,7 +39,11 @@ onMounted(async () => {
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
                 <div class="container py-10 mx-auto">
-                    <DataTable :columns="patient_columns" :data="patientData" />
+                    <DataTable
+                        :columns="patient_columns"
+                        :data="patientData"
+                        @patient-deleted="refreshPatientData()"
+                    />
                 </div>
             </div>
         </div>

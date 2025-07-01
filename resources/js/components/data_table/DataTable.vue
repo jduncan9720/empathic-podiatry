@@ -3,7 +3,8 @@ import { ref } from 'vue'
 import type { ColumnDef, SortingState, ColumnFiltersState } from '@tanstack/vue-table'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-
+import { valueUpdater } from '@/lib/utils'
+import { defineEmits } from 'vue'
 import {
     Table,
     TableBody,
@@ -12,7 +13,6 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table'
-
 import {
     FlexRender,
     getCoreRowModel,
@@ -22,13 +22,11 @@ import {
     useVueTable,
 } from '@tanstack/vue-table'
 
-import { valueUpdater } from '@/lib/utils'
-
 const props = defineProps<{
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
 }>()
-
+const emit = defineEmits(['patient-deleted', 'patient-updated', 'facility-deleted', 'facility-updated']);
 const sorting = ref<SortingState>([])
 const columnFilters = ref<ColumnFiltersState>([])
 
@@ -45,7 +43,11 @@ const table = useVueTable({
         get sorting() { return sorting.value },
         get columnFilters() { return columnFilters.value },
     },
+    meta: {
+        emit: emit as (event: string, ...args: any[]) => void
+    }
 })
+
 </script>
 
 <template>

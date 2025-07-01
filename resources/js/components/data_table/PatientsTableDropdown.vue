@@ -9,9 +9,20 @@ defineProps<{
     }
 }>()
 
-function deletePatient(id: string) {
-    // Logic to delete the patient
-    console.log(`Deleting patient with ID: ${id}`);
+import { defineEmits } from 'vue'
+const emit = defineEmits(['patient-deleted'])
+
+async function deletePatient(id: string) {
+    if (!confirm('Are you sure you want to delete this patient?')) return;
+    const response = await fetch(`/api/patients/${id}`, {
+        method: 'DELETE',
+        headers: { 'Accept': 'application/json' },
+    });
+    if (response.ok) {
+        emit('patient-deleted')
+    } else {
+        alert('Failed to delete patient');
+    }
 }
 
 function editPatient(id: string) {

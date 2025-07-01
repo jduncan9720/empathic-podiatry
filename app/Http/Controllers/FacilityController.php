@@ -32,4 +32,12 @@ class FacilityController extends Controller
 
         return response()->json($facility, 201);
     }
+
+    public function destroy($id)
+    {
+        $facility= Facility::findOrFail($id);
+        $facility->delete();
+
+        return response()->json(['message' => 'Facility deleted'], 200);
+    }
 }

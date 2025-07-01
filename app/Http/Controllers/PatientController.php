@@ -29,4 +29,12 @@ class PatientController extends Controller
 
         return response()->json($patient, 201);
     }
+
+    public function destroy($id)
+    {
+        $patient = Patient::findOrFail($id);
+        $patient->delete();
+
+        return response()->json(['message' => 'Patient deleted'], 200);
+    }
 }

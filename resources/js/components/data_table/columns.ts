@@ -5,6 +5,11 @@ import { Button } from '@/components/ui/button'
 import PatientsDropdownAction from '@/components/data_table/PatientsTableDropdown.vue'
 import FacilitiesDropdownAction from '@/components/data_table/FacilitiesTableDropdown.vue'
 
+declare module '@tanstack/vue-table' {
+    interface TableMeta<TData = unknown> {
+        emit?: (event: string, ...args: any[]) => void;
+    }
+}
 export interface Patient {
     id: string
     name: string
@@ -81,13 +86,18 @@ export const patient_columns: ColumnDef<Patient>[] = [
     {
         id: 'actions',
         enableHiding: false,
-        cell: ({ row }) => {
-            const patient = row.original
-
+        // In `resources/js/components/data_table/columns.ts`
+        cell: ({ row, table }) => {
+            const patient = row.original;
             return h('div', { class: 'relative' }, h(PatientsDropdownAction, {
                 patient,
-            }))
-        },
+                onPatientDeleted: () => {
+                    if (table.options.meta?.emit) {
+                        table.options.meta.emit('patient-deleted');
+                    }
+                }
+            }));
+        }
     }
 ]
 
@@ -203,12 +213,16 @@ export const facility_columns: ColumnDef<Facility>[] = [
     {
         id: 'actions',
         enableHiding: false,
-        cell: ({ row }) => {
-            const facility = row.original
-
+        cell: ({ row, table }) => {
+            const facility = row.original;
             return h('div', { class: 'relative' }, h(FacilitiesDropdownAction, {
                 facility,
-            }))
-        },
+                onFacilityDeleted: () => {
+                    if (table.options.meta?.emit) {
+                        table.options.meta.emit('facility-deleted');
+                    }
+                }
+            }));
+        }
     }
 ]

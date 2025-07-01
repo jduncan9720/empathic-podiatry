@@ -9,9 +9,20 @@ defineProps<{
     }
 }>()
 
-function deleteFacility(id: string) {
-    // Logic to delete the facility
-    console.log(`Deleting facility with ID: ${id}`);
+import { defineEmits } from 'vue'
+const emit = defineEmits(['facility-deleted'])
+
+async function deleteFacility(id: string) {
+    if (!confirm('Are you sure you want to delete this facility?')) return;
+    const response = await fetch(`/api/facilities/${id}`, {
+        method: 'DELETE',
+        headers: { 'Accept': 'application/json' },
+    });
+    if (response.ok) {
+        emit('facility-deleted')
+    } else {
+        alert('Failed to delete facility');
+    }
 }
 
 function editFacility(id: string) {
