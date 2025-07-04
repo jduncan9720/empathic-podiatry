@@ -86,23 +86,36 @@ onMounted(async () => {
             </div>
             <div class="flex flex-col gap-1">
                 <label for="type_of_consent" class="font-medium">Type of Consent</label>
-                <input
+                <select
                     id="type_of_consent"
                     v-model="form.type_of_consent"
-                    type="text"
-                    placeholder="Type of Consent"
+                    required
                     class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                />
+                >
+                    <option value="" disabled>Select type of consent</option>
+                    <option value="Resident Request">Resident Request</option>
+                    <option value="Physician Request">Physician Request</option>
+                </select>
             </div>
             <div class="flex flex-col gap-1">
                 <label for="primary_insurance" class="font-medium">Primary Insurance</label>
-                <input
+                <select
                     id="primary_insurance"
                     v-model="form.primary_insurance"
-                    type="text"
-                    placeholder="Primary Insurance"
+                    required
                     class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                />
+                >
+                    <option value="" disabled>Select primary insurance</option>
+                    <option value="Medicare">Medicare</option>
+                    <option value="Medicaid">Medicaid</option>
+                    <option value="Blue Cross Blue Shield">Blue Cross Blue Shield</option>
+                    <option value="Humana">Humana</option>
+                    <option value="Select Health">Select Health</option>
+                    <option value="Cigna">Cigna</option>
+                    <option value="United/AARP">United/AARP</option>
+                    <option value="U of U Health">U of U Health</option>
+                    <option value="Molina">Molina</option>
+                </select>
             </div>
             <div class="flex flex-col gap-1">
                 <label for="date_last_seen" class="font-medium">Date Last Seen</label>
@@ -116,13 +129,17 @@ onMounted(async () => {
             </div>
             <div class="flex flex-col gap-1">
                 <label for="status" class="font-medium">Status</label>
-                <input
+                <select
                     id="status"
                     v-model="form.status"
-                    type="text"
-                    placeholder="Status"
+                    required
                     class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                />
+                >
+                    <option value="" disabled>Select status</option>
+                    <option value="Active">Active</option>
+                    <option value="Discharged">Discharged</option>
+                    <option value="Deceased">Deceased</option>
+                </select>
             </div>
         </div>
         <br>

@@ -67,6 +67,14 @@ export const patient_columns = (facilities: Facility[]): ColumnDef<Patient>[] =>
         },
     },
     {
+        accessorKey: 'type_of_consent',
+        header: () => h('div', {}, 'Type of Consent'),
+        cell: ({ row }) => {
+            const typeOfConsent = row.getValue('type_of_consent')
+            return h('div', { class: 'font-medium' }, String(typeOfConsent))
+        },
+    },
+    {
         accessorKey: 'primary_insurance',
         header: () => h('div', {}, 'Primary Insurance'),
         cell: ({ row }) => {
@@ -146,6 +154,38 @@ export const facility_columns: ColumnDef<Facility>[] = [
         cell: ({ row }) => h('div', { class: 'font-medium' }, row.getValue('name')),
     },
     {
+        accessorKey: 'contact_name',
+        header: () => h('div', {}, 'Contact Name'),
+        cell: ({ row }) => {
+            const contactName = row.getValue('contact_name')
+            return h('div', { class: 'font-medium' }, String(contactName))
+        },
+    },
+    {
+        accessorKey: 'phone_one',
+        header: () => h('div', {}, 'Phone 1'),
+        cell: ({ row }) => {
+            const phoneOne = row.getValue('phone_one')
+            return h('div', { class: 'font-medium' }, String(phoneOne))
+        },
+    },
+    {
+        accessorKey: 'phone_two',
+        header: () => h('div', {}, 'Phone 2'),
+        cell: ({ row }) => {
+            const phoneTwo = row.getValue('phone_two')
+            return h('div', { class: 'font-medium' }, String(phoneTwo))
+        },
+    },
+    {
+        accessorKey: 'email',
+        header: () => h('div', {}, 'Email'),
+        cell: ({ row }) => {
+            const email = row.getValue('email')
+            return h('div', { class: 'font-medium' }, String(email))
+        },
+    },
+    {
         accessorKey: 'address_one',
         header: () => h('div', {}, 'Address 1'),
         cell: ({ row }) => {
@@ -185,38 +225,6 @@ export const facility_columns: ColumnDef<Facility>[] = [
         cell: ({ row }) => {
             const zip = row.getValue('zip')
             return h('div', { class: 'font-medium' }, String(zip))
-        },
-    },
-    {
-        accessorKey: 'phone_one',
-        header: () => h('div', {}, 'Phone 1'),
-        cell: ({ row }) => {
-            const phoneOne = row.getValue('phone_one')
-            return h('div', { class: 'font-medium' }, String(phoneOne))
-        },
-    },
-    {
-        accessorKey: 'phone_two',
-        header: () => h('div', {}, 'Phone 2'),
-        cell: ({ row }) => {
-            const phoneTwo = row.getValue('phone_two')
-            return h('div', { class: 'font-medium' }, String(phoneTwo))
-        },
-    },
-    {
-        accessorKey: 'email',
-        header: () => h('div', {}, 'Email'),
-        cell: ({ row }) => {
-            const email = row.getValue('email')
-            return h('div', { class: 'font-medium' }, String(email))
-        },
-    },
-    {
-        accessorKey: 'contact_name',
-        header: () => h('div', {}, 'Contact Name'),
-        cell: ({ row }) => {
-            const contactName = row.getValue('contact_name')
-            return h('div', { class: 'font-medium' }, String(contactName))
         },
     },
     {
