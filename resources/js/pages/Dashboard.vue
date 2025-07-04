@@ -8,6 +8,7 @@ import { ref } from 'vue';
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
 import PatientForm from '@/components/specific/PatientForm.vue';
 import FacilityForm from '@/components/specific/FacilityForm.vue';
+import Workspace from '@/components/specific/Workspace.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/dashboard' },
@@ -19,6 +20,8 @@ const dialogs = ref({
     patientSaved: false,
     facilitySaved: false,
 });
+
+const workspaceRef = ref()
 
 function openDialog(type: keyof typeof dialogs.value) {
     dialogs.value[type] = true;
@@ -36,6 +39,7 @@ async function submitPatientForm(form: Record<string, unknown>) {
     if (!response.ok) throw new Error('Failed to submit patient');
     closeDialog('patient');
     openDialog('patientSaved');
+    workspaceRef.value?.refreshPatientData();
 }
 
 async function submitFacilityForm(form: Record<string, unknown>) {
@@ -55,18 +59,21 @@ async function submitFacilityForm(form: Record<string, unknown>) {
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <div class="button-container">
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                <div class="relative overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                     <div class="flex p-8 gap-8 h-full">
-                        <Button @click="openDialog('facility')" variant="outline" class="w-48 h-48 flex flex-col items-center justify-center gap-2">
-                            <HousePlus fill="white" class="!w-[6rem] !h-[6rem]" />
+                        <Button @click="openDialog('facility')" variant="outline" class="w-24 h-24 flex flex-col items-center justify-center gap-2">
+                            <HousePlus fill="white" class="!w-[3rem] !h-[3rem]" />
                             <span>Add a Facility</span>
                         </Button>
-                        <Button @click="openDialog('patient')" variant="outline" class="w-48 h-48 flex flex-col items-center justify-center gap-2">
-                            <UserPlus fill="white" class="!w-[6rem] !h-[6rem]"/>
+                        <Button @click="openDialog('patient')" variant="outline" class="w-24 h-24 flex flex-col items-center justify-center gap-2">
+                            <UserPlus fill="white" class="!w-[3rem] !h-[3rem]"/>
                             Add a Patient
                         </Button>
                     </div>
                 </div>
+            </div>
+            <div class="relative overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                <Workspace ref="workspaceRef"/>
             </div>
             <Dialog v-model:open="dialogs.patient">
                 <DialogContent>

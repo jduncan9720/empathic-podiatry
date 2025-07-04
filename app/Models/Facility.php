@@ -18,4 +18,9 @@ class Facility extends Model
         'email',
         'contact_name',
     ];
+
+    public function patients()
+    {
+        return $this->hasMany(\App\Models\Patient::class);
+    }
 }

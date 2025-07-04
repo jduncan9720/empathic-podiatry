@@ -19,4 +19,9 @@ class Patient extends Model
         'date_last_seen',
         'status',
     ];
+
+    public function facility()
+    {
+        return $this->belongsTo(\App\Models\Facility::class);
+    }
 }

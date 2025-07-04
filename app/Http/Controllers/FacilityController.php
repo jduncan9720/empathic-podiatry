@@ -40,4 +40,9 @@ class FacilityController extends Controller
 
         return response()->json(['message' => 'Facility deleted'], 200);
     }
+
+    public function patients(Facility $facility)
+    {
+        return response()->json($facility->patients);
+    }
 }
