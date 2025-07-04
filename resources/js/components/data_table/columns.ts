@@ -20,7 +20,7 @@ export interface Patient {
     date_last_seen: string
     status: string
 }
-export const patient_columns: ColumnDef<Patient>[] = [
+export const patient_columns = (facilities: Facility[]): ColumnDef<Patient>[] => [
     {
         accessorKey: 'id',
         header: ({ column }) => {
@@ -40,6 +40,15 @@ export const patient_columns: ColumnDef<Patient>[] = [
             }, () => ['Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }) => h('div', { class: 'font-medium' }, row.getValue('name')),
+    },
+    {
+        accessorKey: 'facility_id',
+        header: () => h('div', {}, 'Facility'),
+        cell: ({ row }) => {
+            const facilityId = row.getValue('facility_id');
+            const facility = facilities.find(f => f.id === facilityId);
+            return h('div', { class: 'font-medium' }, facility ? facility.name : 'Unknown');
+        },
     },
     {
         accessorKey: 'date_of_birth',

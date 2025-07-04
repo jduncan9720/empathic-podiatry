@@ -17,6 +17,7 @@ class PatientController extends Controller
     {
         $validated = $request->validate([
             'name'              => 'string|max:255|required',
+            'facility_id'       => 'required|exists:facilities,id',
             'date_of_birth'     => 'string|nullable',
             'room_number'       => 'string|max:50|nullable',
             'type_of_consent'   => 'string|max:255|nullable',

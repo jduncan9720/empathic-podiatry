@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { Button } from '@/components/ui/button';
 
 const emit = defineEmits(['submit', 'close']);
+const facilities = ref<{ id: number; name: string }[]>([]);
 
 const form = ref({
     name: '',
+    facility_id: '',
     date_of_birth: '',
     room_number: '',
     type_of_consent: '',
@@ -21,6 +23,17 @@ function handleSubmit() {
 function handleClose() {
     emit('close');
 }
+
+onMounted(async () => {
+    try {
+        const response = await fetch('/api/facilities');
+        if (!response.ok) throw new Error('Failed to fetch facilities');
+        facilities.value = await response.json();
+    } catch (error) {
+        console.error(error);
+        facilities.value = [];
+    }
+});
 </script>
 
 <template>
@@ -36,6 +49,20 @@ function handleClose() {
                     required
                     class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
+            </div>
+            <div class="flex flex-col gap-1">
+                <label for="facility_id" class="font-medium">Facility</label>
+                <select
+                    id="facility_id"
+                    v-model="form.facility_id"
+                    required
+                    class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                    <option value="" disabled>Select a facility</option>
+                    <option v-for="facility in facilities" :key="facility.id" :value="facility.id">
+                        {{ facility.name }}
+                    </option>
+                </select>
             </div>
             <div class="flex flex-col gap-1">
                 <label for="date_of_birth" class="font-medium">Date of Birth</label>
