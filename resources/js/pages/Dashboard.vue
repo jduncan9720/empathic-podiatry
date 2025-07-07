@@ -9,10 +9,13 @@ import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
 import PatientForm from '@/components/specific/PatientForm.vue';
 import FacilityForm from '@/components/specific/FacilityForm.vue';
 import Workspace from '@/components/specific/Workspace.vue';
+import { useFacilityForm } from '@/composables/useFacilityForm';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/dashboard' },
 ];
+
+const { submitFacility } = useFacilityForm();
 
 const dialogs = ref({
     patient: false,
@@ -43,12 +46,7 @@ async function submitPatientForm(form: Record<string, unknown>) {
 }
 
 async function submitFacilityForm(form: Record<string, unknown>) {
-    const response = await fetch('/api/facilities', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(form),
-    });
-    if (!response.ok) throw new Error('Failed to submit facility');
+    await submitFacility(form);
     closeDialog('facility');
     openDialog('facilitySaved');
 }

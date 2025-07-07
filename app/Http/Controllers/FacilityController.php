@@ -33,6 +33,27 @@ class FacilityController extends Controller
         return response()->json($facility, 201);
     }
 
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'name'          => 'string|max:255|required',
+            'address_one'   => 'string|max:255|nullable',
+            'address_two'   => 'string|max:255|nullable',
+            'city'          => 'string|max:100|nullable',
+            'state'         => 'string|max:100|nullable',
+            'zip'           => 'string|max:20|nullable',
+            'phone_one'     => 'string|max:20|nullable',
+            'phone_two'     => 'string|max:20|nullable',
+            'email'         => 'email|max:255|nullable',
+            'contact_name'  => 'string|max:255|nullable',
+        ]);
+
+        $facility = Facility::findOrFail($id);
+        $facility->update($validated);
+
+        return response()->json($facility, 200);
+    }
+
     public function destroy($id)
     {
         $facility= Facility::findOrFail($id);

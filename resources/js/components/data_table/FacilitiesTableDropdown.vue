@@ -25,10 +25,6 @@ async function deleteFacility(id: string) {
     }
 }
 
-function editFacility(id: string) {
-    // Logic to delete the facility
-    console.log(`Editing facility with ID: ${id}`);
-}
 </script>
 
 <template>
@@ -41,7 +37,6 @@ function editFacility(id: string) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem @click="editFacility(facility.id)">Edit Facility</DropdownMenuItem>
             <DropdownMenuItem @click="deleteFacility(facility.id)">Delete Facility</DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>

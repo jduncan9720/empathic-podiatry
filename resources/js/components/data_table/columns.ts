@@ -106,7 +106,10 @@ export const patient_columns = (facilities: Facility[]): ColumnDef<Patient>[] =>
         // In `resources/js/components/data_table/columns.ts`
         cell: ({ row, table }) => {
             const patient = row.original;
-            return h('div', { class: 'relative' }, h(PatientsDropdownAction, {
+            return h('div', {
+                class: 'relative',
+                onClick: (event: MouseEvent) => event.stopPropagation(),
+            }, h(PatientsDropdownAction, {
                 patient,
                 onPatientDeleted: () => {
                     if (table.options.meta?.emit) {
@@ -232,7 +235,10 @@ export const facility_columns: ColumnDef<Facility>[] = [
         enableHiding: false,
         cell: ({ row, table }) => {
             const facility = row.original;
-            return h('div', { class: 'relative' }, h(FacilitiesDropdownAction, {
+            return h('div', {
+                class: 'relative',
+                onClick: (event: MouseEvent) => event.stopPropagation(),
+            }, h(FacilitiesDropdownAction, {
                 facility,
                 onFacilityDeleted: () => {
                     if (table.options.meta?.emit) {
@@ -355,10 +361,12 @@ export const working_columns = (facilities: Facility[]): ColumnDef<Patient>[] =>
     {
         id: 'actions',
         enableHiding: false,
-        // In `resources/js/components/data_table/columns.ts`
         cell: ({ row, table }) => {
             const patient = row.original;
-            return h('div', { class: 'relative' }, h(PatientsDropdownAction, {
+            return h('div', {
+                class: 'relative',
+                onClick: (event: MouseEvent) => event.stopPropagation(),
+            }, h(PatientsDropdownAction, {
                 patient,
                 onPatientDeleted: () => {
                     if (table.options.meta?.emit) {

@@ -1,6 +1,21 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch, toRefs } from 'vue';
 import { Button } from '@/components/ui/button';
+
+const props = defineProps<{
+    facility?: {
+        name: string,
+        address_one: string,
+        address_two: string,
+        city: string,
+        state: string,
+        zip: string,
+        phone_one: string,
+        phone_two: string,
+        email: string,
+        contact_name: string,
+    } | null
+}>();
 
 const emit = defineEmits(['submit', 'close']);
 
@@ -24,6 +39,29 @@ function handleSubmit() {
 function handleClose() {
     emit('close');
 }
+
+watch(
+    () => props.facility,
+    (facility) => {
+        if (facility) {
+            form.value = { ...facility };
+        } else {
+            form.value = {
+                name: '',
+                address_one: '',
+                address_two: '',
+                city: '',
+                state: 'ut',
+                zip: '',
+                phone_one: '',
+                phone_two: '',
+                email: '',
+                contact_name: '',
+            };
+        }
+    },
+    { immediate: true }
+);
 </script>
 
 <template>

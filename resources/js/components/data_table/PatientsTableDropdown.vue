@@ -25,10 +25,6 @@ async function deletePatient(id: string) {
     }
 }
 
-function editPatient(id: string) {
-    // Logic to delete the patient
-    console.log(`Editing patient with ID: ${id}`);
-}
 </script>
 
 <template>
@@ -41,7 +37,6 @@ function editPatient(id: string) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem @click="editPatient(patient.id)">Edit Patient</DropdownMenuItem>
             <DropdownMenuItem @click="deletePatient(patient.id)">Delete Patient</DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>
