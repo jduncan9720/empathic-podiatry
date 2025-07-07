@@ -31,6 +31,10 @@ function refreshPatientData() {
     }
 }
 
+function openEditPatientDialog(patient: Patient) {
+    console.log('Open edit form dialog for patient:', patient);
+}
+
 onMounted(async () => {
     [facilityData.value] = await Promise.all([
         getFacilityData()
@@ -59,6 +63,7 @@ defineExpose({ refreshPatientData });
             :columns="working_columns(facilityData)"
             :data="patientData"
             @patient-deleted="refreshPatientData()"
+            @row-clicked="openEditPatientDialog($event)"
         />
     </div>
 </template>

@@ -29,7 +29,7 @@ async function refreshPatientData() {
     patientData.value = await getPatientData();
 }
 
-function openEditFormDialog(patient: Patient) {
+function openEditPatientDialog(patient: Patient) {
     console.log('Open edit form dialog for patient:', patient);
 }
 
@@ -51,7 +51,7 @@ onMounted(async () => {
                         :columns="patient_columns(facilityData)"
                         :data="patientData"
                         @patient-deleted="refreshPatientData()"
-                        @row-clicked="openEditFormDialog($event)"
+                        @row-clicked="openEditPatientDialog($event)"
                     />
                 </div>
             </div>
