@@ -350,5 +350,22 @@ export const working_columns = (facilities: Facility[]): ColumnDef<Patient>[] =>
                 }
             }));
         }
+    },
+    {
+        id: 'done',
+        header: () => h('div', {}, 'Done'),
+        cell: ({ row, table }) => {
+            return h(Button, {
+                class: 'bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded',
+                variant: 'outline', // or 'ghost', 'default', etc. if supported
+                size: 'sm',
+                onClick: (event: MouseEvent) => {
+                    event.stopPropagation();
+                    if (table.options.meta?.emit) {
+                        table.options.meta.emit('done-clicked', row.original);
+                    }
+                }
+            }, () => 'Done');
+        }
     }
 ]
