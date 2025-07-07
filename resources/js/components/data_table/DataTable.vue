@@ -26,7 +26,7 @@ const props = defineProps<{
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
 }>()
-const emit = defineEmits(['patient-deleted', 'patient-updated', 'facility-deleted', 'facility-updated']);
+const emit = defineEmits(['patient-deleted', 'patient-updated', 'facility-deleted', 'facility-updated', 'row-clicked']);
 const sorting = ref<SortingState>([])
 const columnFilters = ref<ColumnFiltersState>([])
 
@@ -47,6 +47,10 @@ const table = useVueTable({
         emit: emit as (event: string, ...args: any[]) => void
     }
 })
+
+function onRowClick(rowData: TData) {
+    emit('row-clicked', rowData);
+}
 
 </script>
 
@@ -74,6 +78,7 @@ const table = useVueTable({
                         <TableRow
                             v-for="row in table.getRowModel().rows" :key="row.id"
                             :data-state="row.getIsSelected() ? 'selected' : undefined"
+                            @click="onRowClick(row.original)"
                         >
                             <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
                                 <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />

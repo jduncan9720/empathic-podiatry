@@ -29,6 +29,10 @@ async function refreshPatientData() {
     patientData.value = await getPatientData();
 }
 
+function openEditFormDialog(patient: Patient) {
+    console.log('Open edit form dialog for patient:', patient);
+}
+
 onMounted(async () => {
     [patientData.value, facilityData.value] = await Promise.all([
         getPatientData(),
@@ -47,6 +51,7 @@ onMounted(async () => {
                         :columns="patient_columns(facilityData)"
                         :data="patientData"
                         @patient-deleted="refreshPatientData()"
+                        @row-clicked="openEditFormDialog($event)"
                     />
                 </div>
             </div>
