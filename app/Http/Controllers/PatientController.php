@@ -31,6 +31,25 @@ class PatientController extends Controller
         return response()->json($patient, 201);
     }
 
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'name'              => 'string|max:255|required',
+            'facility_id'       => 'required|exists:facilities,id',
+            'date_of_birth'     => 'string|nullable',
+            'room_number'       => 'string|max:50|nullable',
+            'type_of_consent'   => 'string|max:255|nullable',
+            'primary_insurance' => 'string|max:255|nullable',
+            'date_last_seen'    => 'date|nullable',
+            'status'            => 'string|max:50|nullable',
+        ]);
+
+        $patient = Patient::findOrFail($id);
+        $patient->update($validated);
+
+        return response()->json($patient, 200);
+    }
+
     public function destroy($id)
     {
         $patient = Patient::findOrFail($id);

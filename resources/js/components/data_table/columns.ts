@@ -13,6 +13,7 @@ declare module '@tanstack/vue-table' {
 export interface Patient {
     id: string
     name: string
+    facility_id: string
     date_of_birth: string
     room_number: string
     type_of_consent: string

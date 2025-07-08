@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { Button } from '@/components/ui/button';
+import { Patient } from '@/components/data_table/columns';
 
 const emit = defineEmits(['submit', 'close']);
 const facilities = ref<{ id: number; name: string }[]>([]);
+const props = defineProps<{ patient?: Patient | null }>();
 
 const form = ref({
     name: '',
@@ -23,6 +25,27 @@ function handleSubmit() {
 function handleClose() {
     emit('close');
 }
+
+watch(
+    () => props.patient,
+    (patient) => {
+        if (patient) {
+            form.value = { ...patient };
+        } else {
+            form.value = {
+                name: '',
+                facility_id: '',
+                date_of_birth: '',
+                room_number: '',
+                type_of_consent: '',
+                primary_insurance: '',
+                date_last_seen: '',
+                status: '',
+            };
+        }
+    },
+    { immediate: true }
+);
 
 onMounted(async () => {
     try {

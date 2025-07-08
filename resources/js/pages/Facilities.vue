@@ -11,10 +11,7 @@ import { useFacilityForm } from '@/composables/useFacilityForm';
 import { Button } from '@/components/ui/button';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Facilities',
-        href: '/facilities',
-    },
+    { title: 'Facilities', href: '/facilities' },
 ];
 
 const { updateFacility, error } = useFacilityForm();
@@ -54,7 +51,7 @@ async function submitFacilityEditForm(form: Record<string, unknown>) {
         await updateFacility(Number(selectedFacility.value.id), form);
         closeEditDialog();
         showSavedDialog.value = true;
-        refreshFacilityData()
+        await refreshFacilityData()
     } catch (e) {
         console.error('Error submitting facility form:', e);
     }

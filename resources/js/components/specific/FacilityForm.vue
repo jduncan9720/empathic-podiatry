@@ -1,21 +1,9 @@
 <script setup lang="ts">
 import { ref, watch, toRefs } from 'vue';
 import { Button } from '@/components/ui/button';
+import { Facility } from '@/components/data_table/columns';
 
-const props = defineProps<{
-    facility?: {
-        name: string,
-        address_one: string,
-        address_two: string,
-        city: string,
-        state: string,
-        zip: string,
-        phone_one: string,
-        phone_two: string,
-        email: string,
-        contact_name: string,
-    } | null
-}>();
+const props = defineProps<{ facility?: Facility | null }>();
 
 const emit = defineEmits(['submit', 'close']);
 
