@@ -10,12 +10,14 @@ import PatientForm from '@/components/specific/PatientForm.vue';
 import FacilityForm from '@/components/specific/FacilityForm.vue';
 import Workspace from '@/components/specific/Workspace.vue';
 import { useFacilityForm } from '@/composables/useFacilityForm';
+import { usePatientForm } from '@/composables/usePatientForm';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/dashboard' },
 ];
 
 const { submitFacility } = useFacilityForm();
+const { submitPatient } = usePatientForm();
 
 const dialogs = ref({
     patient: false,
@@ -34,12 +36,7 @@ function closeDialog(type: keyof typeof dialogs.value) {
 }
 
 async function submitPatientForm(form: Record<string, unknown>) {
-    const response = await fetch('/api/patients', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(form),
-    });
-    if (!response.ok) throw new Error('Failed to submit patient');
+    await submitPatient(form);
     closeDialog('patient');
     openDialog('patientSaved');
     workspaceRef.value?.refreshPatientData();
