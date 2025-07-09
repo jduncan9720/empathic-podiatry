@@ -62,6 +62,16 @@ async function submitPatientEditForm(form: Record<string, unknown>) {
         console.error('Error submitting patient form:', e);
     }
 }
+async function updateLastSeen(patient: Patient) {
+    if (!patient.id) return;
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        await updatePatient(Number(patient.id), { ...patient, date_last_seen: today });
+        refreshPatientData();
+    } catch (e) {
+        console.error('Error updating last seen:', e);
+    }
+}
 
 onMounted(async () => {
     [facilityData.value] = await Promise.all([
@@ -91,6 +101,7 @@ defineExpose({ refreshPatientData });
             :columns="working_columns(facilityData)"
             :data="patientData"
             @patient-deleted="refreshPatientData()"
+            @done-clicked="updateLastSeen($event)"
             @row-clicked="openEditPatientDialog($event)"
         />
     </div>
