@@ -104,7 +104,6 @@ export const patient_columns = (facilities: Facility[]): ColumnDef<Patient>[] =>
     {
         id: 'actions',
         enableHiding: false,
-        // In `resources/js/components/data_table/columns.ts`
         cell: ({ row, table }) => {
             const patient = row.original;
             return h('div', {
@@ -376,5 +375,5 @@ export const working_columns = (facilities: Facility[]): ColumnDef<Patient>[] =>
                 }
             }));
         }
-    },
+    }
 ]

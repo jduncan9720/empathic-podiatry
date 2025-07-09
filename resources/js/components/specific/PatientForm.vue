@@ -5,7 +5,7 @@ import { Patient } from '@/components/data_table/columns';
 
 const emit = defineEmits(['submit', 'close']);
 const facilities = ref<{ id: number; name: string }[]>([]);
-const props = defineProps<{ patient?: Patient | null }>();
+const props = defineProps<{ patient?: Patient | null; facilityReadonly?: boolean }>();
 
 const form = ref({
     name: '',
@@ -79,6 +79,7 @@ onMounted(async () => {
                     id="facility_id"
                     v-model="form.facility_id"
                     required
+                    :disabled="props.facilityReadonly"
                     class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                     <option value="" disabled>Select a facility</option>

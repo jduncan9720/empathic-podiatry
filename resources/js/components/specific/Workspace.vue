@@ -2,13 +2,19 @@
 import { watch, onMounted, ref } from 'vue';
 import { Facility, Patient, working_columns } from '@/components/data_table/columns';
 import DataTable from '@/components/data_table/DataTable.vue';
+import PatientForm from '@/components/specific/PatientForm.vue';
+import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
+import { usePatientForm } from '@/composables/usePatientForm';
+import { Button } from '@/components/ui/button';
 
 const patientData = ref<Patient[]>([])
 const facilityData = ref<Facility[]>([])
 const selectedFacility = ref<string>('');
+const showEditDialog = ref(false);
+const selectedPatient = ref<Patient | null>(null);
+const showSavedDialog = ref(false);
 
-// Add this to accept the event from parent
-defineProps({});
+const { updatePatient, error } = usePatientForm();
 
 async function getPatientData(facilityId: string): Promise<Patient[]> {
     if (!facilityId) return [];
@@ -32,7 +38,29 @@ function refreshPatientData() {
 }
 
 function openEditPatientDialog(patient: Patient) {
-    console.log('Open edit form dialog for patient:', patient);
+    selectedPatient.value = patient;
+    showEditDialog.value = true;
+}
+
+function closeEditDialog() {
+    showEditDialog.value = false;
+    selectedPatient.value = null;
+}
+
+function closeSavedDialog() {
+    showSavedDialog.value = false;
+}
+
+async function submitPatientEditForm(form: Record<string, unknown>) {
+    if (!selectedPatient.value) return;
+    try {
+        await updatePatient(Number(selectedPatient.value.id), form);
+        closeEditDialog();
+        showSavedDialog.value = true;
+        refreshPatientData();
+    } catch (e) {
+        console.error('Error submitting patient form:', e);
+    }
 }
 
 onMounted(async () => {
@@ -66,4 +94,27 @@ defineExpose({ refreshPatientData });
             @row-clicked="openEditPatientDialog($event)"
         />
     </div>
+    <Dialog v-model:open="showEditDialog">
+        <DialogContent>
+            <DialogHeader>
+                <h2>Edit Patient</h2>
+            </DialogHeader>
+            <PatientForm
+                :patient="selectedPatient"
+                :facilityReadonly="true"
+                @submit="submitPatientEditForm"
+                @close="closeEditDialog"
+            />
+        </DialogContent>
+    </Dialog>
+    <Dialog v-model:open="showSavedDialog">
+        <DialogContent>
+            <DialogHeader>
+                <h2>Patient saved</h2>
+            </DialogHeader>
+            <div class="flex justify-end">
+                <Button @click="closeSavedDialog">OK</Button>
+            </div>
+        </DialogContent>
+    </Dialog>
 </template>
