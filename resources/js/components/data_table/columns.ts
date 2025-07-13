@@ -345,13 +345,29 @@ export const working_columns = (facilities: Facility[]): ColumnDef<Patient>[] =>
         id: 'done',
         header: () => h('div', {}, 'Done'),
         cell: ({ row, table }) => {
+            const dateStr = row.getValue('date_last_seen');
+            let disabled = false;
+            if (typeof dateStr === 'string' && dateStr) {
+                const lastSeen = new Date(dateStr + 'T00:00:00');
+                if (!isNaN(lastSeen.getTime())) {
+                    const now = new Date();
+                    const diffDays = (now.getTime() - lastSeen.getTime()) / (1000 * 60 * 60 * 24);
+                    disabled = diffDays <= 30;
+                }
+            }
             return h(Button, {
-                class: 'bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded',
-                variant: 'outline', // or 'ghost', 'default', etc. if supported
+                class: [
+                    disabled
+                        ? 'bg-red-500 hover:bg-red-600'
+                        : 'bg-green-500 hover:bg-green-600',
+                    'text-white font-bold py-2 px-4 rounded'
+                ].join(' '),
+                variant: 'outline',
                 size: 'sm',
+                disabled,
                 onClick: (event: MouseEvent) => {
                     event.stopPropagation();
-                    if (table.options.meta?.emit) {
+                    if (!disabled && table.options.meta?.emit) {
                         table.options.meta.emit('done-clicked', row.original);
                     }
                 }
