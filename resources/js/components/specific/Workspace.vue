@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watch, onMounted, ref } from 'vue';
+import { computed, watch, onMounted, ref } from 'vue';
 import { Facility, Patient, working_columns } from '@/components/data_table/columns';
 import DataTable from '@/components/data_table/DataTable.vue';
 import PatientForm from '@/components/specific/PatientForm.vue';
@@ -13,6 +13,7 @@ const selectedFacility = ref<string>('');
 const showEditDialog = ref(false);
 const selectedPatient = ref<Patient | null>(null);
 const showSavedDialog = ref(false);
+const showLastSeen = ref(false);
 
 const { updatePatient, error } = usePatientForm();
 
@@ -73,6 +74,15 @@ async function updateLastSeen(patient: Patient) {
     }
 }
 
+const sortedPatientData = computed(() => {
+    if (!showLastSeen.value) return patientData.value;
+    return [...patientData.value].sort((a, b) => {
+        if (!a.date_last_seen) return 1;
+        if (!b.date_last_seen) return -1;
+        return a.date_last_seen.localeCompare(b.date_last_seen);
+    });
+});
+
 onMounted(async () => {
     [facilityData.value] = await Promise.all([
         getFacilityData()
@@ -95,11 +105,14 @@ defineExpose({ refreshPatientData });
                 {{ facility.name }}
             </option>
         </select>
+        <Button @click="showLastSeen = !showLastSeen" class="ml-4">
+            Last Seen
+        </Button>
     </div>
     <div v-if="selectedFacility" class="container pl-10">
         <DataTable
             :columns="working_columns(facilityData)"
-            :data="patientData"
+            :data="sortedPatientData"
             @patient-deleted="refreshPatientData()"
             @done-clicked="updateLastSeen($event)"
             @row-clicked="openEditPatientDialog($event)"
