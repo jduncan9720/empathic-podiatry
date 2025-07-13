@@ -75,6 +75,15 @@ async function updateLastSeen(patient: Patient) {
     }
 }
 
+function toggleLastSeen() {
+    showLastSeen.value = !showLastSeen.value;
+    if (showLastSeen.value) showPhysicianRequests.value = false;
+}
+function togglePhysicianRequests() {
+    showPhysicianRequests.value = !showPhysicianRequests.value;
+    if (showPhysicianRequests.value) showLastSeen.value = false;
+}
+
 const sortedPatientData = computed(() => {
     const data = [...patientData.value];
     if (showPhysicianRequests.value) {
@@ -115,10 +124,10 @@ defineExpose({ refreshPatientData });
                 {{ facility.name }}
             </option>
         </select>
-        <Button @click="showLastSeen = !showLastSeen" class="ml-4">
+        <Button @click="toggleLastSeen" class="ml-4">
             Last Seen
         </Button>
-        <Button @click="showPhysicianRequests = !showPhysicianRequests" class="ml-4">
+        <Button @click="togglePhysicianRequests" class="ml-4">
             Consent
         </Button>
     </div>
