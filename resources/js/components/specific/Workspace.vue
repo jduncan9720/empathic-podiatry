@@ -15,6 +15,7 @@ const selectedPatient = ref<Patient | null>(null);
 const showSavedDialog = ref(false);
 const showNeedsSeen = ref(false);
 const showPhysicianRequests = ref(false);
+const showAll = ref(true);
 
 const { updatePatient, error } = usePatientForm();
 
@@ -75,13 +76,20 @@ async function updateNeedsSeen(patient: Patient) {
     }
 }
 
+function toggleAll() {
+    showAll.value = true;
+    showNeedsSeen.value = false;
+    showPhysicianRequests.value = false;
+}
 function toggleNeedsSeen() {
     showNeedsSeen.value = true;
     showPhysicianRequests.value = false;
+    showAll.value = false;
 }
 function togglePhysicianRequests() {
     showPhysicianRequests.value = true;
     showNeedsSeen.value = false;
+    showAll.value = false;
 }
 
 const sortedPatientData = computed(() => {
@@ -98,6 +106,8 @@ const sortedPatientData = computed(() => {
             if (!b.date_last_seen) return -1;
             return a.date_last_seen.localeCompare(b.date_last_seen);
         });
+    } else if (showAll.value) {
+        data.sort((a, b) => Number(a.id) - Number(b.id));
     }
     return data;
 });
@@ -149,10 +159,13 @@ defineExpose({ refreshPatientData });
                 </option>
             </select>
             <div v-if="selectedFacility" class="flex items-center ml-4 w-full">
-                <Button @click="toggleNeedsSeen">
+                <Button @click="toggleAll" :variant="showAll ? 'default' : 'outline'">
+                    All
+                </Button>
+                <Button @click="toggleNeedsSeen" class="ml-4" :variant="showNeedsSeen ? 'default' : 'outline'">
                     Needs Seen
                 </Button>
-                <Button @click="togglePhysicianRequests" class="ml-4">
+                <Button @click="togglePhysicianRequests" class="ml-4" :variant="showPhysicianRequests ? 'default' : 'outline'">
                     Consent
                 </Button>
                 <Button @click="exportPhysicianConsentPatients" class="ml-4 ml-auto">
