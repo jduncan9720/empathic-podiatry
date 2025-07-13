@@ -13,7 +13,7 @@ const selectedFacility = ref<string>('');
 const showEditDialog = ref(false);
 const selectedPatient = ref<Patient | null>(null);
 const showSavedDialog = ref(false);
-const showLastSeen = ref(false);
+const showNeedsSeen = ref(false);
 const showPhysicianRequests = ref(false);
 
 const { updatePatient, error } = usePatientForm();
@@ -64,7 +64,7 @@ async function submitPatientEditForm(form: Record<string, unknown>) {
         console.error('Error submitting patient form:', e);
     }
 }
-async function updateLastSeen(patient: Patient) {
+async function updateNeedsSeen(patient: Patient) {
     if (!patient.id) return;
     try {
         const today = new Date().toISOString().split('T')[0];
@@ -75,13 +75,13 @@ async function updateLastSeen(patient: Patient) {
     }
 }
 
-function toggleLastSeen() {
-    showLastSeen.value = !showLastSeen.value;
-    if (showLastSeen.value) showPhysicianRequests.value = false;
+function toggleNeedsSeen() {
+    showNeedsSeen.value = true;
+    showPhysicianRequests.value = false;
 }
 function togglePhysicianRequests() {
-    showPhysicianRequests.value = !showPhysicianRequests.value;
-    if (showPhysicianRequests.value) showLastSeen.value = false;
+    showPhysicianRequests.value = true;
+    showNeedsSeen.value = false;
 }
 
 const sortedPatientData = computed(() => {
@@ -92,7 +92,7 @@ const sortedPatientData = computed(() => {
             const bIsPhysician = b.type_of_consent === 'Physician Request' ? -1 : 1;
             return aIsPhysician - bIsPhysician;
         });
-    } else if (showLastSeen.value) {
+    } else if (showNeedsSeen.value) {
         data.sort((a, b) => {
             if (!a.date_last_seen) return 1;
             if (!b.date_last_seen) return -1;
@@ -149,8 +149,8 @@ defineExpose({ refreshPatientData });
                 </option>
             </select>
             <div v-if="selectedFacility" class="flex items-center ml-4 w-full">
-                <Button @click="toggleLastSeen">
-                    Last Seen
+                <Button @click="toggleNeedsSeen">
+                    Needs Seen
                 </Button>
                 <Button @click="togglePhysicianRequests" class="ml-4">
                     Consent
@@ -166,7 +166,7 @@ defineExpose({ refreshPatientData });
             :columns="working_columns(facilityData)"
             :data="sortedPatientData"
             @patient-deleted="refreshPatientData()"
-            @done-clicked="updateLastSeen($event)"
+            @done-clicked="updateNeedsSeen($event)"
             @row-clicked="openEditPatientDialog($event)"
         />
     </div>
