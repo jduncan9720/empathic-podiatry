@@ -102,6 +102,29 @@ const sortedPatientData = computed(() => {
     return data;
 });
 
+function exportPhysicianConsentPatients() {
+    const rows = patientData.value.filter(
+        p => p.type_of_consent === 'Physician Request'
+    );
+    if (!rows.length) return;
+
+    // Convert to CSV
+    const headers = Object.keys(rows[0]);
+    const csv = [
+        headers.join(','),
+        ...rows.map(row => headers.map(h => `"${(row as any)[h] ?? ''}"`).join(','))
+    ].join('\n');
+
+    // Download as file
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'physician_consent_patients.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
 onMounted(async () => {
     [facilityData.value] = await Promise.all([
         getFacilityData()
@@ -118,18 +141,25 @@ defineExpose({ refreshPatientData });
 <template>
     <div class="container pt-10 pl-10">
         <h2 class="text-2xl font-semibold mb-4">Select Facility</h2>
-        <select v-model="selectedFacility" class="border rounded px-3 py-2 mb-4">
-            <option value="" disabled>Select a facility</option>
-            <option v-for="facility in facilityData" :key="facility.id" :value="facility.id">
-                {{ facility.name }}
-            </option>
-        </select>
-        <Button @click="toggleLastSeen" class="ml-4">
-            Last Seen
-        </Button>
-        <Button @click="togglePhysicianRequests" class="ml-4">
-            Consent
-        </Button>
+        <div class="flex items-center mb-4">
+            <select v-model="selectedFacility" class="border rounded px-3 py-2">
+                <option value="" disabled>Select a facility</option>
+                <option v-for="facility in facilityData" :key="facility.id" :value="facility.id">
+                    {{ facility.name }}
+                </option>
+            </select>
+            <div v-if="selectedFacility" class="flex items-center ml-4 w-full">
+                <Button @click="toggleLastSeen">
+                    Last Seen
+                </Button>
+                <Button @click="togglePhysicianRequests" class="ml-4">
+                    Consent
+                </Button>
+                <Button @click="exportPhysicianConsentPatients" class="ml-4 ml-auto">
+                    Export Physician Consent
+                </Button>
+            </div>
+        </div>
     </div>
     <div v-if="selectedFacility" class="container pl-10">
         <DataTable
