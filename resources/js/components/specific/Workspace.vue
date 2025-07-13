@@ -14,6 +14,7 @@ const showEditDialog = ref(false);
 const selectedPatient = ref<Patient | null>(null);
 const showSavedDialog = ref(false);
 const showLastSeen = ref(false);
+const showPhysicianRequests = ref(false);
 
 const { updatePatient, error } = usePatientForm();
 
@@ -75,12 +76,21 @@ async function updateLastSeen(patient: Patient) {
 }
 
 const sortedPatientData = computed(() => {
-    if (!showLastSeen.value) return patientData.value;
-    return [...patientData.value].sort((a, b) => {
-        if (!a.date_last_seen) return 1;
-        if (!b.date_last_seen) return -1;
-        return a.date_last_seen.localeCompare(b.date_last_seen);
-    });
+    const data = [...patientData.value];
+    if (showPhysicianRequests.value) {
+        data.sort((a, b) => {
+            const aIsPhysician = a.type_of_consent === 'Physician Request' ? -1 : 1;
+            const bIsPhysician = b.type_of_consent === 'Physician Request' ? -1 : 1;
+            return aIsPhysician - bIsPhysician;
+        });
+    } else if (showLastSeen.value) {
+        data.sort((a, b) => {
+            if (!a.date_last_seen) return 1;
+            if (!b.date_last_seen) return -1;
+            return a.date_last_seen.localeCompare(b.date_last_seen);
+        });
+    }
+    return data;
 });
 
 onMounted(async () => {
@@ -107,6 +117,9 @@ defineExpose({ refreshPatientData });
         </select>
         <Button @click="showLastSeen = !showLastSeen" class="ml-4">
             Last Seen
+        </Button>
+        <Button @click="showPhysicianRequests = !showPhysicianRequests" class="ml-4">
+            Consent
         </Button>
     </div>
     <div v-if="selectedFacility" class="container pl-10">
