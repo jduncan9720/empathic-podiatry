@@ -13,6 +13,8 @@ withDefaults(defineProps<Props>(), {
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
-        <slot />
+        <div class="min-h-screen bg-slate-50 dark:bg-slate-900">
+            <slot />
+        </div>
     </AppLayout>
 </template>

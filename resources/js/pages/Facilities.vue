@@ -9,6 +9,7 @@ import FacilityForm from '@/components/specific/FacilityForm.vue';
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
 import { useFacilityForm } from '@/composables/useFacilityForm';
 import { Button } from '@/components/ui/button';
+import { Building2, Plus } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Facilities', href: '/facilities' },
@@ -67,23 +68,51 @@ onMounted(async () => {
     <Head title="Facilities" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-                <div class="container py-10 mx-auto">
-                    <DataTable
-                        :columns="facility_columns"
-                        :data="facilityData"
-                        @facility-deleted="refreshFacilityData()"
-                        @row-clicked="openEditFacilityDialog($event)"
-                    />
+        <div class="flex h-full flex-1 flex-col gap-6 p-6">
+            <!-- Header Section -->
+            <div class="flex items-center justify-between">
+                <div class="space-y-1">
+                    <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Facilities</h1>
+                    <p class="text-slate-600 dark:text-slate-400">Manage your healthcare facilities and their information.</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2 rounded-lg bg-blue-50 px-3 py-2 dark:bg-blue-900/20">
+                        <Building2 class="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                        <span class="text-sm font-medium text-blue-600 dark:text-blue-400">{{ facilityData.length }} Facilities</span>
+                    </div>
+                    <Button class="bg-blue-600 hover:bg-blue-700">
+                        <Plus class="mr-2 h-4 w-4" />
+                        Add Facility
+                    </Button>
+                </div>
+            </div>
+
+            <!-- Data Table Section -->
+            <div class="flex-1">
+                <div class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+                    <div class="border-b border-slate-200 px-6 py-4 dark:border-slate-700">
+                        <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Facility Directory</h2>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">Click on any facility to edit its information</p>
+                    </div>
+                    <div class="p-6">
+                        <DataTable
+                            :columns="facility_columns"
+                            :data="facilityData"
+                            @facility-deleted="refreshFacilityData()"
+                            @row-clicked="openEditFacilityDialog($event)"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
     </AppLayout>
+
+    <!-- Edit Facility Dialog -->
     <Dialog v-model:open="showEditDialog">
-        <DialogContent>
+        <DialogContent class="sm:max-w-md">
             <DialogHeader>
-                <h2>Edit Facility</h2>
+                <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Edit Facility</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400">Update facility information and details.</p>
             </DialogHeader>
             <FacilityForm
                 :facility="selectedFacility"
@@ -92,13 +121,16 @@ onMounted(async () => {
             />
         </DialogContent>
     </Dialog>
+
+    <!-- Success Dialog -->
     <Dialog v-model:open="showSavedDialog">
-        <DialogContent>
+        <DialogContent class="sm:max-w-md">
             <DialogHeader>
-                <h2>Facility saved</h2>
+                <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Facility Updated</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400">The facility has been successfully updated.</p>
             </DialogHeader>
             <div class="flex justify-end">
-                <Button @click="closeSavedDialog">OK</Button>
+                <Button @click="closeSavedDialog" class="bg-green-600 hover:bg-green-700">OK</Button>
             </div>
         </DialogContent>
     </Dialog>

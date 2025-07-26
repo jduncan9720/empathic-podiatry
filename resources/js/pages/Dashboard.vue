@@ -2,7 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import { HousePlus, UserPlus } from 'lucide-vue-next';
+import { HousePlus, UserPlus, Activity, Users, Building2 } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import { ref } from 'vue';
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
@@ -52,57 +52,135 @@ async function submitFacilityForm(form: Record<string, unknown>) {
 <template>
     <Head title="Dashboard" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <div class="button-container">
-                <div class="relative overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <div class="flex p-8 gap-8 h-full">
-                        <Button @click="openDialog('facility')" variant="outline" class="w-24 h-24 flex flex-col items-center justify-center gap-2">
-                            <HousePlus fill="white" class="!w-[3rem] !h-[3rem]" />
-                            <span>Add a Facility</span>
-                        </Button>
-                        <Button @click="openDialog('patient')" variant="outline" class="w-24 h-24 flex flex-col items-center justify-center gap-2">
-                            <UserPlus fill="white" class="!w-[3rem] !h-[3rem]"/>
-                            Add a Patient
-                        </Button>
+        <div class="flex h-full flex-1 flex-col gap-6 p-6">
+            <!-- Header Section -->
+            <div class="space-y-2">
+                <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Dashboard</h1>
+                <p class="text-slate-600 dark:text-slate-400">Welcome back! Manage your practice efficiently.</p>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <!-- Add Facility Card -->
+                <div class="group relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+                            <Building2 class="h-6 w-6" />
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-slate-900 dark:text-white">Add Facility</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-400">Register a new healthcare facility</p>
+                        </div>
+                    </div>
+                    <Button 
+                        @click="openDialog('facility')" 
+                        variant="outline" 
+                        class="mt-4 w-full transition-all hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-blue-900/20 dark:hover:text-blue-400"
+                    >
+                        <HousePlus class="mr-2 h-4 w-4" />
+                        Add Facility
+                    </Button>
+                </div>
+
+                <!-- Add Patient Card -->
+                <div class="group relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400">
+                            <Users class="h-6 w-6" />
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-slate-900 dark:text-white">Add Patient</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-400">Register a new patient</p>
+                        </div>
+                    </div>
+                    <Button 
+                        @click="openDialog('patient')" 
+                        variant="outline" 
+                        class="mt-4 w-full transition-all hover:bg-green-50 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400"
+                    >
+                        <UserPlus class="mr-2 h-4 w-4" />
+                        Add Patient
+                    </Button>
+                </div>
+
+                <!-- Quick Stats Card -->
+                <div class="group relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
+                            <Activity class="h-6 w-6" />
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-slate-900 dark:text-white">Quick Stats</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-400">View practice overview</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 grid grid-cols-2 gap-4 text-center">
+                        <div>
+                            <div class="text-2xl font-bold text-slate-900 dark:text-white">12</div>
+                            <div class="text-xs text-slate-600 dark:text-slate-400">Patients</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-slate-900 dark:text-white">3</div>
+                            <div class="text-xs text-slate-600 dark:text-slate-400">Facilities</div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="relative overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                <Workspace ref="workspaceRef"/>
+
+            <!-- Workspace Section -->
+            <div class="flex-1">
+                <div class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+                    <div class="border-b border-slate-200 px-6 py-4 dark:border-slate-700">
+                        <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Practice Overview</h2>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">Monitor your practice activity and recent updates</p>
+                    </div>
+                    <div class="p-6">
+                        <Workspace ref="workspaceRef"/>
+                    </div>
+                </div>
             </div>
+
+            <!-- Dialogs -->
             <Dialog v-model:open="dialogs.patient">
-                <DialogContent>
+                <DialogContent class="sm:max-w-md">
                     <DialogHeader>
-                        <h2>Add Patient</h2>
+                        <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Add Patient</h2>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">Enter patient information to register them in the system.</p>
                     </DialogHeader>
                     <PatientForm @submit="submitPatientForm" @close="() => closeDialog('patient')" />
                 </DialogContent>
             </Dialog>
+
             <Dialog v-model:open="dialogs.facility">
-                <DialogContent>
+                <DialogContent class="sm:max-w-md">
                     <DialogHeader>
-                        <h2>Add Facility</h2>
+                        <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Add Facility</h2>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">Enter facility information to register it in the system.</p>
                     </DialogHeader>
                     <FacilityForm @submit="submitFacilityForm" @close="() => closeDialog('facility')" />
                 </DialogContent>
             </Dialog>
+
             <Dialog v-model:open="dialogs.patientSaved">
-                <DialogContent>
+                <DialogContent class="sm:max-w-md">
                     <DialogHeader>
-                        <h2>Patient saved</h2>
+                        <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Patient Saved</h2>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">The patient has been successfully registered.</p>
                     </DialogHeader>
                     <div class="flex justify-end">
-                        <Button @click="closeDialog('patientSaved')">OK</Button>
+                        <Button @click="closeDialog('patientSaved')" class="bg-green-600 hover:bg-green-700">OK</Button>
                     </div>
                 </DialogContent>
             </Dialog>
+
             <Dialog v-model:open="dialogs.facilitySaved">
-                <DialogContent>
+                <DialogContent class="sm:max-w-md">
                     <DialogHeader>
-                        <h2>Facility saved</h2>
+                        <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Facility Saved</h2>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">The facility has been successfully registered.</p>
                     </DialogHeader>
                     <div class="flex justify-end">
-                        <Button @click="closeDialog('facilitySaved')">OK</Button>
+                        <Button @click="closeDialog('facilitySaved')" class="bg-green-600 hover:bg-green-700">OK</Button>
                     </div>
                 </DialogContent>
             </Dialog>

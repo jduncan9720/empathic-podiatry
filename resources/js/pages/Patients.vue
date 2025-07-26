@@ -9,6 +9,7 @@ import PatientForm from '@/components/specific/PatientForm.vue';
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
 import { usePatientForm } from '@/composables/usePatientForm';
 import { Button } from '@/components/ui/button';
+import { Users, Plus, UserCheck } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Patients', href: '/patients' },
@@ -75,23 +76,51 @@ onMounted(async () => {
 <template>
     <Head title="Patients" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-                <div class="container py-10 mx-auto">
-                    <DataTable
-                        :columns="patient_columns(facilityData)"
-                        :data="patientData"
-                        @patient-deleted="refreshPatientData()"
-                        @row-clicked="openEditPatientDialog($event)"
-                    />
+        <div class="flex h-full flex-1 flex-col gap-6 p-6">
+            <!-- Header Section -->
+            <div class="flex items-center justify-between">
+                <div class="space-y-1">
+                    <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Patients</h1>
+                    <p class="text-slate-600 dark:text-slate-400">Manage your patient records and information.</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2 rounded-lg bg-green-50 px-3 py-2 dark:bg-green-900/20">
+                        <UserCheck class="h-4 w-4 text-green-600 dark:text-green-400" />
+                        <span class="text-sm font-medium text-green-600 dark:text-green-400">{{ patientData.length }} Patients</span>
+                    </div>
+                    <Button class="bg-green-600 hover:bg-green-700">
+                        <Plus class="mr-2 h-4 w-4" />
+                        Add Patient
+                    </Button>
+                </div>
+            </div>
+
+            <!-- Data Table Section -->
+            <div class="flex-1">
+                <div class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+                    <div class="border-b border-slate-200 px-6 py-4 dark:border-slate-700">
+                        <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Patient Directory</h2>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">Click on any patient to edit their information</p>
+                    </div>
+                    <div class="p-6">
+                        <DataTable
+                            :columns="patient_columns(facilityData)"
+                            :data="patientData"
+                            @patient-deleted="refreshPatientData()"
+                            @row-clicked="openEditPatientDialog($event)"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
     </AppLayout>
+
+    <!-- Edit Patient Dialog -->
     <Dialog v-model:open="showEditDialog">
-        <DialogContent>
+        <DialogContent class="sm:max-w-md">
             <DialogHeader>
-                <h2>Edit Patient</h2>
+                <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Edit Patient</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400">Update patient information and details.</p>
             </DialogHeader>
             <PatientForm
                 :patient="selectedPatient"
@@ -100,13 +129,16 @@ onMounted(async () => {
             />
         </DialogContent>
     </Dialog>
+
+    <!-- Success Dialog -->
     <Dialog v-model:open="showSavedDialog">
-        <DialogContent>
+        <DialogContent class="sm:max-w-md">
             <DialogHeader>
-                <h2>Patient saved</h2>
+                <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Patient Updated</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400">The patient has been successfully updated.</p>
             </DialogHeader>
             <div class="flex justify-end">
-                <Button @click="closeSavedDialog">OK</Button>
+                <Button @click="closeSavedDialog" class="bg-green-600 hover:bg-green-700">OK</Button>
             </div>
         </DialogContent>
     </Dialog>
