@@ -33,19 +33,41 @@ class PatientController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'name'              => 'string|max:255|required',
-            'facility_id'       => 'required|exists:facilities,id',
-            'date_of_birth'     => 'string|nullable',
-            'room_number'       => 'string|max:50|nullable',
-            'type_of_consent'   => 'string|max:255|nullable',
-            'primary_insurance' => 'string|max:255|nullable',
-            'date_last_seen'    => 'date|nullable',
-            'status'            => 'string|max:50|nullable',
-        ]);
-
         $patient = Patient::findOrFail($id);
-        $patient->update($validated);
+        
+        // Define validation rules for each field that might be updated
+        $validationRules = [];
+        
+        if ($request->has('name')) {
+            $validationRules['name'] = 'string|max:255';
+        }
+        if ($request->has('facility_id')) {
+            $validationRules['facility_id'] = 'exists:facilities,id';
+        }
+        if ($request->has('date_of_birth')) {
+            $validationRules['date_of_birth'] = 'string|nullable';
+        }
+        if ($request->has('room_number')) {
+            $validationRules['room_number'] = 'string|max:50|nullable';
+        }
+        if ($request->has('type_of_consent')) {
+            $validationRules['type_of_consent'] = 'string|max:255|nullable';
+        }
+        if ($request->has('primary_insurance')) {
+            $validationRules['primary_insurance'] = 'string|max:255|nullable';
+        }
+        if ($request->has('date_last_seen')) {
+            $validationRules['date_last_seen'] = 'date|nullable';
+        }
+        if ($request->has('status')) {
+            $validationRules['status'] = 'string|max:50|nullable';
+        }
+        
+        // Only validate if there are fields to validate
+        if (!empty($validationRules)) {
+            $validated = $request->validate($validationRules);
+            $patient->update($validated);
+        }
 
         return response()->json($patient, 200);
     }

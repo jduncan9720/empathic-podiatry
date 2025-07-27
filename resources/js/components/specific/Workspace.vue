@@ -65,6 +65,7 @@ async function submitPatientEditForm(form: Record<string, unknown>) {
         console.error('Error submitting patient form:', e);
     }
 }
+
 async function updateNeedsSeen(patient: Patient) {
     if (!patient.id) return;
     try {
@@ -73,6 +74,41 @@ async function updateNeedsSeen(patient: Patient) {
         refreshPatientData();
     } catch (e) {
         console.error('Error updating last seen:', e);
+    }
+}
+
+async function updatePatientStatus(patient: Patient, newStatus: string) {
+    if (!patient.id) {
+        console.error('No patient ID found');
+        return;
+    }
+    
+    console.log('Updating patient status:', { 
+        patientId: patient.id, 
+        oldStatus: patient.status, 
+        newStatus: newStatus 
+    });
+    
+    try {
+        // Create the update payload with only the status field
+        const updatePayload = {
+            status: newStatus
+        };
+        
+        console.log('Sending update payload:', updatePayload);
+        console.log('Making API call to:', `/api/patients/${patient.id}`);
+        
+        const result = await updatePatient(Number(patient.id), updatePayload);
+        
+        console.log('API response:', result);
+        console.log('Status updated successfully');
+        
+        // Refresh the patient data to show the updated status
+        await refreshPatientData();
+        
+    } catch (e) {
+        console.error('Error updating patient status:', e);
+        // You might want to show a user-friendly error message here
     }
 }
 
@@ -180,6 +216,7 @@ defineExpose({ refreshPatientData });
             :data="sortedPatientData"
             @patient-deleted="refreshPatientData()"
             @done-clicked="updateNeedsSeen($event)"
+            @status-changed="(patient, newStatus) => updatePatientStatus(patient, newStatus)"
             @row-clicked="openEditPatientDialog($event)"
         />
     </div>

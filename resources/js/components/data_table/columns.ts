@@ -336,9 +336,35 @@ export const working_columns = (facilities: Facility[]): ColumnDef<Patient>[] =>
     {
         accessorKey: 'status',
         header: () => h('div', {}, 'Status'),
-        cell: ({ row }) => {
-            const status = row.getValue('status')
-            return h('div', { class: 'font-medium' }, String(status))
+        cell: ({ row, table }) => {
+            const status = row.getValue('status') as string;
+            const statusOptions = ['treated', 'deceased', 'discharged', 'refused', 'visit complete'];
+            
+            return h('select', {
+                class: 'w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-slate-800 dark:border-slate-600 dark:text-white',
+                value: status || '',
+                onChange: (event: Event) => {
+                    const target = event.target as HTMLSelectElement;
+                    const newStatus = target.value;
+                    console.log('Status dropdown changed:', { 
+                        patientId: row.original.id, 
+                        oldStatus: status, 
+                        newStatus: newStatus 
+                    });
+                    
+                    if (table.options.meta?.emit) {
+                        table.options.meta.emit('status-changed', row.original, newStatus);
+                    } else {
+                        console.error('Table meta emit not available');
+                    }
+                },
+                onClick: (event: MouseEvent) => event.stopPropagation(),
+            }, statusOptions.map(option => 
+                h('option', {
+                    value: option,
+                    selected: status === option
+                }, option.charAt(0).toUpperCase() + option.slice(1))
+            ));
         },
     },
     {

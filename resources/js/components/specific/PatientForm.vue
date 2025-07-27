@@ -160,9 +160,11 @@ onMounted(async () => {
                     class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                     <option value="" disabled>Select status</option>
-                    <option value="Active">Active</option>
-                    <option value="Discharged">Discharged</option>
-                    <option value="Deceased">Deceased</option>
+                    <option value="treated">Treated</option>
+                    <option value="deceased">Deceased</option>
+                    <option value="discharged">Discharged</option>
+                    <option value="refused">Refused</option>
+                    <option value="visit complete">Visit Complete</option>
                 </select>
             </div>
         </div>
