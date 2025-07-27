@@ -148,27 +148,48 @@ const sortedPatientData = computed(() => {
     return data;
 });
 
-function exportPhysicianConsentPatients() {
-    const rows = patientData.value.filter(
+async function generatePhysicianOrderPDF() {
+    const physicianPatients = patientData.value.filter(
         p => p.type_of_consent === 'Physician Request'
     );
-    if (!rows.length) return;
-
-    // Convert to CSV
-    const headers = Object.keys(rows[0]);
-    const csv = [
-        headers.join(','),
-        ...rows.map(row => headers.map(h => `"${(row as any)[h] ?? ''}"`).join(','))
-    ].join('\n');
-
-    // Download as file
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'physician_consent_patients.csv';
-    a.click();
-    URL.revokeObjectURL(url);
+    
+    if (!physicianPatients.length) {
+        alert('No physician consent patients found');
+        return;
+    }
+    
+    try {
+        const facility = facilityData.value.find(f => f.id === selectedFacility.value);
+        const facilityName = facility ? facility.name : 'Spring Creek';
+        
+        const response = await fetch('/api/pdf/download-physician-order', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/pdf'
+            },
+            body: JSON.stringify({
+                patients: physicianPatients,
+                facilityName: facilityName
+            })
+        });
+        
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `physician-order-${new Date().toISOString().split('T')[0]}.pdf`;
+            a.click();
+            URL.revokeObjectURL(url);
+        } else {
+            console.error('Failed to generate PDF');
+            alert('Failed to generate PDF. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        alert('Error generating PDF. Please try again.');
+    }
 }
 
 onMounted(async () => {
@@ -204,8 +225,8 @@ defineExpose({ refreshPatientData });
                 <Button @click="togglePhysicianRequests" class="ml-4" :variant="showPhysicianRequests ? 'default' : 'outline'">
                     Consent
                 </Button>
-                <Button @click="exportPhysicianConsentPatients" class="ml-4 ml-auto">
-                    Export Physician Consent
+                <Button @click="generatePhysicianOrderPDF" class="ml-4 ml-auto" variant="outline">
+                    Generate Physician Order PDF
                 </Button>
             </div>
         </div>
