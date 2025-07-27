@@ -192,6 +192,60 @@ async function generatePhysicianOrderPDF() {
     }
 }
 
+async function generatePodiatryVisitPDF() {
+    // Use the same logic as the "Needs Seen" filter
+    const patientsNeedingSeen = patientData.value.filter(patient => {
+        if (!patient.date_last_seen) return true;
+        
+        const lastSeen = new Date(patient.date_last_seen + 'T00:00:00');
+        if (isNaN(lastSeen.getTime())) return true;
+        
+        const now = new Date();
+        const diffDays = (now.getTime() - lastSeen.getTime()) / (1000 * 60 * 60 * 24);
+        return diffDays > 30;
+    });
+    
+    if (!patientsNeedingSeen.length) {
+        alert('No patients found that need to be seen');
+        return;
+    }
+    
+    try {
+        const facility = facilityData.value.find(f => f.id === selectedFacility.value);
+        const facilityName = facility ? facility.name : 'Spring Creek';
+        const facilityContact = facility ? facility.contact_name : '';
+        
+        const response = await fetch('/api/pdf/download-podiatry-visit', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/pdf'
+            },
+            body: JSON.stringify({
+                patients: patientsNeedingSeen,
+                facilityName: facilityName,
+                facilityContact: facilityContact
+            })
+        });
+        
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `podiatry-visit-${new Date().toISOString().split('T')[0]}.pdf`;
+            a.click();
+            URL.revokeObjectURL(url);
+        } else {
+            console.error('Failed to generate PDF');
+            alert('Failed to generate PDF. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        alert('Error generating PDF. Please try again.');
+    }
+}
+
 onMounted(async () => {
     [facilityData.value] = await Promise.all([
         getFacilityData()
@@ -216,18 +270,25 @@ defineExpose({ refreshPatientData });
                 </option>
             </select>
             <div v-if="selectedFacility" class="flex items-center ml-4 w-full">
-                <Button @click="toggleAll" :variant="showAll ? 'default' : 'outline'">
-                    All
-                </Button>
-                <Button @click="toggleNeedsSeen" class="ml-4" :variant="showNeedsSeen ? 'default' : 'outline'">
-                    Needs Seen
-                </Button>
-                <Button @click="togglePhysicianRequests" class="ml-4" :variant="showPhysicianRequests ? 'default' : 'outline'">
-                    Consent
-                </Button>
-                <Button @click="generatePhysicianOrderPDF" class="ml-4 ml-auto" variant="outline">
-                    Generate Physician Order PDF
-                </Button>
+                <div class="flex gap-4">
+                    <Button @click="toggleAll" :variant="showAll ? 'default' : 'outline'">
+                        All
+                    </Button>
+                    <Button @click="toggleNeedsSeen" :variant="showNeedsSeen ? 'default' : 'outline'">
+                        Needs Seen
+                    </Button>
+                    <Button @click="togglePhysicianRequests" :variant="showPhysicianRequests ? 'default' : 'outline'">
+                        Consent
+                    </Button>
+                </div>
+                <div class="flex justify-end gap-4 ml-auto">
+                    <Button @click="generatePhysicianOrderPDF">
+                        Generate Physician Order PDF
+                    </Button>
+                    <Button @click="generatePodiatryVisitPDF">
+                        Generate Podiatry Visit PDF
+                    </Button>
+                </div>
             </div>
         </div>
     </div>

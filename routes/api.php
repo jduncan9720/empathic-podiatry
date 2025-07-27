@@ -20,3 +20,5 @@ Route::delete('/facilities/{id}', [FacilityController::class, 'destroy']);
 // PDF Routes
 Route::post('/pdf/physician-order', [PdfController::class, 'generatePhysicianOrder']);
 Route::post('/pdf/download-physician-order', [PdfController::class, 'downloadPhysicianOrder']);
+Route::post('/pdf/podiatry-visit', [PdfController::class, 'generatePodiatryVisit']);
+Route::post('/pdf/download-podiatry-visit', [PdfController::class, 'downloadPodiatryVisit']);
