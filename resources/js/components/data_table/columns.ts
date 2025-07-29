@@ -351,7 +351,7 @@ export const working_columns = (facilities: Facility[]): ColumnDef<Patient>[] =>
         header: () => h('div', {}, 'Status'),
         cell: ({ row, table }) => {
             const status = row.getValue('status') as string;
-            const statusOptions = ['treated', 'deceased', 'discharged', 'refused', 'visit complete'];
+            const statusOptions = ['needs seen', 'deceased', 'discharged', 'refused', 'visit complete'];
             
             return h('select', {
                 class: 'w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-slate-800 dark:border-slate-600 dark:text-white',
