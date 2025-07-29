@@ -391,7 +391,7 @@ export const working_columns = (facilities: Facility[]): ColumnDef<Patient>[] =>
                 if (!isNaN(lastSeen.getTime())) {
                     const now = new Date();
                     const diffDays = (now.getTime() - lastSeen.getTime()) / (1000 * 60 * 60 * 24);
-                    disabled = diffDays <= 30;
+                    disabled = diffDays <= 60;
                 }
             }
             return h(Button, {

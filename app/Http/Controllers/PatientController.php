@@ -93,8 +93,14 @@ class PatientController extends Controller
     {
         $patient = Patient::withTrashed()->findOrFail($id);
         $patient->restore();
+        
+        // Set status to "needs seen" when restoring a patient
+        $patient->update(['status' => 'needs seen']);
 
-        return response()->json(['message' => 'Patient restored', 'patient' => $patient], 200);
+        return response()->json([
+            'message' => 'Patient restored', 
+            'patient' => $patient->fresh()
+        ], 200);
     }
 
     /**

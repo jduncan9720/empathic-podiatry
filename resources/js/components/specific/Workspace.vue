@@ -58,6 +58,23 @@ async function submitPatientEditForm(form: Record<string, unknown>) {
     if (!selectedPatient.value) return;
     try {
         await updatePatient(Number(selectedPatient.value.id), form);
+        
+        // If status is changed to "deceased" or "discharged", soft delete the patient
+        if (form.status === 'deceased' || form.status === 'discharged') {
+            console.log(`Patient status changed to "${form.status}", soft deleting patient ${selectedPatient.value.id}`);
+            
+            const deleteResponse = await fetch(`/api/patients/${selectedPatient.value.id}`, {
+                method: 'DELETE',
+                headers: { 'Accept': 'application/json' },
+            });
+            
+            if (deleteResponse.ok) {
+                console.log(`Successfully soft deleted patient ${selectedPatient.value.id}`);
+            } else {
+                console.error(`Failed to soft delete patient ${selectedPatient.value.id}`);
+            }
+        }
+        
         closeEditDialog();
         showSavedDialog.value = true;
         refreshPatientData();
@@ -70,7 +87,11 @@ async function updateNeedsSeen(patient: Patient) {
     if (!patient.id) return;
     try {
         const today = new Date().toISOString().split('T')[0];
-        await updatePatient(Number(patient.id), { ...patient, date_last_seen: today });
+        await updatePatient(Number(patient.id), { 
+            ...patient, 
+            date_last_seen: today,
+            status: 'visit complete'
+        });
         refreshPatientData();
     } catch (e) {
         console.error('Error updating last seen:', e);
@@ -95,13 +116,23 @@ async function updatePatientStatus(patient: Patient, newStatus: string) {
             status: newStatus
         };
         
-        console.log('Sending update payload:', updatePayload);
-        console.log('Making API call to:', `/api/patients/${patient.id}`);
-        
         const result = await updatePatient(Number(patient.id), updatePayload);
         
-        console.log('API response:', result);
-        console.log('Status updated successfully');
+        // If status is changed to "deceased" or "discharged", soft delete the patient
+        if (newStatus === 'deceased' || newStatus === 'discharged') {
+            console.log(`Patient status changed to "${newStatus}", soft deleting patient ${patient.id}`);
+            
+            const deleteResponse = await fetch(`/api/patients/${patient.id}`, {
+                method: 'DELETE',
+                headers: { 'Accept': 'application/json' },
+            });
+            
+            if (deleteResponse.ok) {
+                console.log(`Successfully soft deleted patient ${patient.id}`);
+            } else {
+                console.error(`Failed to soft delete patient ${patient.id}`);
+            }
+        }
         
         // Refresh the patient data to show the updated status
         await refreshPatientData();
@@ -110,6 +141,54 @@ async function updatePatientStatus(patient: Patient, newStatus: string) {
         console.error('Error updating patient status:', e);
         // You might want to show a user-friendly error message here
     }
+}
+
+async function autoUpdateNeedsSeenStatus() {
+    if (!patientData.value.length) return;
+    
+    const now = new Date();
+    const sixtyDaysAgo = new Date(now.getTime() - (60 * 24 * 60 * 60 * 1000));
+    
+    const patientsToUpdate = patientData.value.filter(patient => {
+        // Skip soft deleted patients
+        if (patient.deleted_at) return false;
+        
+        // Skip patients already marked as "needs seen"
+        if (patient.status === 'needs seen') return false;
+        
+        // Skip patients with "refused" status (keep as refused regardless of time)
+        if (patient.status === 'refused') return false;
+        
+        // Skip patients with no date_last_seen (they should be marked as needs seen)
+        if (!patient.date_last_seen) return true;
+        
+        // Check if last seen is more than 60 days ago
+        const lastSeen = new Date(patient.date_last_seen + 'T00:00:00');
+        if (isNaN(lastSeen.getTime())) return true; // Invalid date, mark as needs seen
+        
+        return lastSeen < sixtyDaysAgo;
+    });
+    
+    if (patientsToUpdate.length === 0) return;
+    
+    console.log(`Auto-updating ${patientsToUpdate.length} patients to "needs seen" status`);
+    
+    // Update all qualifying patients
+    const updatePromises = patientsToUpdate.map(async (patient) => {
+        try {
+            await updatePatient(Number(patient.id), {
+                ...patient,
+                status: 'needs seen'
+            });
+        } catch (e) {
+            console.error(`Error updating patient ${patient.id}:`, e);
+        }
+    });
+    
+    await Promise.all(updatePromises);
+    await refreshPatientData();
+    
+    console.log(`Successfully updated ${patientsToUpdate.length} patients to "needs seen" status`);
 }
 
 function toggleAll() {
@@ -250,10 +329,12 @@ onMounted(async () => {
     [facilityData.value] = await Promise.all([
         getFacilityData()
     ]);
+    // Note: autoUpdateNeedsSeenStatus will be called when a facility is selected
 })
 
 watch(selectedFacility, async (facilityId) => {
     patientData.value = await getPatientData(facilityId);
+    await autoUpdateNeedsSeenStatus(); // Call this whenever facility changes
 });
 
 defineExpose({ refreshPatientData });
