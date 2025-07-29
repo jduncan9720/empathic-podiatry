@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Facility extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'name',
         'address_one',
@@ -22,5 +25,21 @@ class Facility extends Model
     public function patients()
     {
         return $this->hasMany(\App\Models\Patient::class);
+    }
+
+    /**
+     * Scope to include only soft deleted facilities
+     */
+    public function scopeOnlyTrashed($query)
+    {
+        return $query->onlyTrashed();
+    }
+
+    /**
+     * Scope to include both active and soft deleted facilities
+     */
+    public function scopeWithTrashed($query)
+    {
+        return $query->withTrashed();
     }
 }

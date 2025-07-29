@@ -23,7 +23,8 @@ const showSavedDialog = ref(false);
 const selectedPatient = ref<Patient | null>(null);
 
 async function getPatientData(): Promise<Patient[]> {
-    const response = await fetch('/api/patients');
+    // Fetch all patients including soft deleted ones
+    const response = await fetch('/api/patients?include_trashed=true');
     if (!response.ok) throw new Error('Failed to fetch patients');
     return await response.json();
 }
@@ -39,6 +40,11 @@ async function refreshPatientData() {
 }
 
 function openEditPatientDialog(patient: Patient) {
+    // Don't allow editing soft deleted patients
+    if (patient.deleted_at) {
+        alert('Cannot edit a deleted patient. Please restore the patient first.');
+        return;
+    }
     console.log('Open edit form dialog for patient:', patient);
     selectedPatient.value = patient;
     showEditDialog.value = true;
@@ -100,13 +106,14 @@ onMounted(async () => {
                 <div class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
                     <div class="border-b border-slate-200 px-6 py-4 dark:border-slate-700">
                         <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Patient Directory</h2>
-                        <p class="text-sm text-slate-600 dark:text-slate-400">Click on any patient to edit their information</p>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">Click on any patient to edit their information. Deleted patients are shown in red.</p>
                     </div>
                     <div class="p-6">
                         <DataTable
                             :columns="patient_columns(facilityData)"
                             :data="patientData"
                             @patient-deleted="refreshPatientData()"
+                            @patient-restored="refreshPatientData()"
                             @row-clicked="openEditPatientDialog($event)"
                         />
                     </div>

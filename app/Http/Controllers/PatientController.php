@@ -8,8 +8,14 @@ use Illuminate\Http\Request;
 class PatientController extends Controller
 {
     // Return all patients as JSON
-    public function index()
+    public function index(Request $request)
     {
+        $includeTrashed = $request->boolean('include_trashed');
+        
+        if ($includeTrashed) {
+            return response()->json(Patient::withTrashed()->get());
+        }
+        
         return response()->json(Patient::all());
     }
 
@@ -78,5 +84,35 @@ class PatientController extends Controller
         $patient->delete();
 
         return response()->json(['message' => 'Patient deleted'], 200);
+    }
+
+    /**
+     * Restore a soft deleted patient
+     */
+    public function restore($id)
+    {
+        $patient = Patient::withTrashed()->findOrFail($id);
+        $patient->restore();
+
+        return response()->json(['message' => 'Patient restored', 'patient' => $patient], 200);
+    }
+
+    /**
+     * Permanently delete a patient
+     */
+    public function forceDelete($id)
+    {
+        $patient = Patient::withTrashed()->findOrFail($id);
+        $patient->forceDelete();
+
+        return response()->json(['message' => 'Patient permanently deleted'], 200);
+    }
+
+    /**
+     * Get only soft deleted patients
+     */
+    public function trashed()
+    {
+        return response()->json(Patient::onlyTrashed()->get());
     }
 }

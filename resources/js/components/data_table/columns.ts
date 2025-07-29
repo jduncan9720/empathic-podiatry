@@ -20,6 +20,7 @@ export interface Patient {
     primary_insurance: string
     date_last_seen: string
     status: string
+    deleted_at?: string | null
 }
 export const patient_columns = (facilities: Facility[]): ColumnDef<Patient>[] => [
     {
@@ -40,7 +41,14 @@ export const patient_columns = (facilities: Facility[]): ColumnDef<Patient>[] =>
                 onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
             }, () => ['Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }) => h('div', { class: 'font-medium' }, row.getValue('name')),
+        cell: ({ row }) => {
+            const patient = row.original;
+            const isDeleted = patient.deleted_at;
+            const name = row.getValue('name') as string;
+            return h('div', { 
+                class: `font-medium ${isDeleted ? 'text-red-500 line-through' : ''}` 
+            }, isDeleted ? `${name} (Deleted)` : name);
+        },
     },
     {
         accessorKey: 'facility_id',
@@ -114,6 +122,11 @@ export const patient_columns = (facilities: Facility[]): ColumnDef<Patient>[] =>
                 onPatientDeleted: () => {
                     if (table.options.meta?.emit) {
                         table.options.meta.emit('patient-deleted');
+                    }
+                },
+                onPatientRestored: () => {
+                    if (table.options.meta?.emit) {
+                        table.options.meta.emit('patient-restored');
                     }
                 }
             }));

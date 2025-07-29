@@ -26,7 +26,7 @@ const props = defineProps<{
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
 }>()
-const emit = defineEmits(['patient-deleted', 'patient-updated', 'facility-deleted', 'facility-updated', 'row-clicked', 'status-changed', 'done-clicked']);
+const emit = defineEmits(['patient-deleted', 'patient-restored', 'patient-updated', 'facility-deleted', 'facility-updated', 'row-clicked', 'status-changed', 'done-clicked']);
 const sorting = ref<SortingState>([])
 const columnFilters = ref<ColumnFiltersState>([])
 

@@ -62,6 +62,36 @@ class FacilityController extends Controller
         return response()->json(['message' => 'Facility deleted'], 200);
     }
 
+    /**
+     * Restore a soft deleted facility
+     */
+    public function restore($id)
+    {
+        $facility = Facility::withTrashed()->findOrFail($id);
+        $facility->restore();
+
+        return response()->json(['message' => 'Facility restored', 'facility' => $facility], 200);
+    }
+
+    /**
+     * Permanently delete a facility
+     */
+    public function forceDelete($id)
+    {
+        $facility = Facility::withTrashed()->findOrFail($id);
+        $facility->forceDelete();
+
+        return response()->json(['message' => 'Facility permanently deleted'], 200);
+    }
+
+    /**
+     * Get only soft deleted facilities
+     */
+    public function trashed()
+    {
+        return response()->json(Facility::onlyTrashed()->get());
+    }
+
     public function patients(Facility $facility)
     {
         return response()->json($facility->patients);
