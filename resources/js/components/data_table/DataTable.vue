@@ -76,8 +76,10 @@ function onRowClick(rowData: TData) {
                 <TableBody>
                     <template v-if="table.getRowModel().rows?.length">
                         <TableRow
-                            v-for="row in table.getRowModel().rows" :key="row.id"
+                            v-for="(row, index) in table.getRowModel().rows" 
+                            :key="row.id"
                             :data-state="row.getIsSelected() ? 'selected' : undefined"
+                            :class="index % 2 === 0 ? 'bg-white dark:bg-slate-800' : 'bg-slate-50 dark:bg-slate-700'"
                             @click="onRowClick(row.original)"
                         >
                             <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
