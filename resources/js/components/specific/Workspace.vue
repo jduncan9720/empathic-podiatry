@@ -237,6 +237,11 @@ async function generatePhysicianOrderPDF() {
         return;
     }
     
+    // Sort patients alphabetically by name
+    const sortedPhysicianPatients = physicianPatients.sort((a, b) => 
+        a.name.localeCompare(b.name)
+    );
+    
     try {
         const facility = facilityData.value.find(f => f.id === selectedFacility.value);
         const facilityName = facility ? facility.name : 'Spring Creek';
@@ -248,7 +253,7 @@ async function generatePhysicianOrderPDF() {
                 'Accept': 'application/pdf'
             },
             body: JSON.stringify({
-                patients: physicianPatients,
+                patients: sortedPhysicianPatients,
                 facilityName: facilityName
             })
         });
@@ -281,13 +286,18 @@ async function generatePodiatryVisitPDF() {
         
         const now = new Date();
         const diffDays = (now.getTime() - lastSeen.getTime()) / (1000 * 60 * 60 * 24);
-        return diffDays > 30;
+        return diffDays > 60;
     });
     
     if (!patientsNeedingSeen.length) {
         alert('No patients found that need to be seen');
         return;
     }
+    
+    // Sort patients alphabetically by name
+    const sortedPatientsNeedingSeen = patientsNeedingSeen.sort((a, b) => 
+        a.name.localeCompare(b.name)
+    );
     
     try {
         const facility = facilityData.value.find(f => f.id === selectedFacility.value);
@@ -301,7 +311,7 @@ async function generatePodiatryVisitPDF() {
                 'Accept': 'application/pdf'
             },
             body: JSON.stringify({
-                patients: patientsNeedingSeen,
+                patients: sortedPatientsNeedingSeen,
                 facilityName: facilityName,
                 facilityContact: facilityContact
             })
