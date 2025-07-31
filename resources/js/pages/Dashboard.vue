@@ -102,29 +102,6 @@ async function submitFacilityForm(form: Record<string, unknown>) {
                         Add Patient
                     </Button>
                 </div>
-
-                <!-- Quick Stats Card -->
-                <div class="group relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800">
-                    <div class="flex items-center space-x-4">
-                        <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
-                            <Activity class="h-6 w-6" />
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="font-semibold text-slate-900 dark:text-white">Quick Stats</h3>
-                            <p class="text-sm text-slate-600 dark:text-slate-400">View practice overview</p>
-                        </div>
-                    </div>
-                    <div class="mt-4 grid grid-cols-2 gap-4 text-center">
-                        <div>
-                            <div class="text-2xl font-bold text-slate-900 dark:text-white">12</div>
-                            <div class="text-xs text-slate-600 dark:text-slate-400">Patients</div>
-                        </div>
-                        <div>
-                            <div class="text-2xl font-bold text-slate-900 dark:text-white">3</div>
-                            <div class="text-xs text-slate-600 dark:text-slate-400">Facilities</div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <!-- Workspace Section -->
