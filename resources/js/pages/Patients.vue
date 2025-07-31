@@ -15,10 +15,11 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Patients', href: '/patients' },
 ];
 
-const { updatePatient, error } = usePatientForm();
+const { updatePatient, submitPatient, error } = usePatientForm();
 const patientData = ref<Patient[]>([])
 const facilityData = ref<Facility[]>([])
 const showEditDialog = ref(false);
+const showAddDialog = ref(false);
 const showSavedDialog = ref(false);
 const selectedPatient = ref<Patient | null>(null);
 
@@ -50,8 +51,19 @@ function openEditPatientDialog(patient: Patient) {
     showEditDialog.value = true;
 }
 
+function openAddPatientDialog() {
+    console.log('Open add patient dialog');
+    selectedPatient.value = null;
+    showAddDialog.value = true;
+}
+
 function closeEditDialog() {
     showEditDialog.value = false;
+    selectedPatient.value = null;
+}
+
+function closeAddDialog() {
+    showAddDialog.value = false;
     selectedPatient.value = null;
 }
 
@@ -64,6 +76,17 @@ async function submitPatientEditForm(form: Record<string, unknown>) {
     try {
         await updatePatient(Number(selectedPatient.value.id), form);
         closeEditDialog();
+        showSavedDialog.value = true;
+        await refreshPatientData()
+    } catch (e) {
+        console.error('Error submitting patient form:', e);
+    }
+}
+
+async function submitPatientAddForm(form: Record<string, unknown>) {
+    try {
+        await submitPatient(form);
+        closeAddDialog();
         showSavedDialog.value = true;
         await refreshPatientData()
     } catch (e) {
@@ -94,7 +117,7 @@ onMounted(async () => {
                         <UserCheck class="h-4 w-4 text-green-600 dark:text-green-400" />
                         <span class="text-sm font-medium text-green-600 dark:text-green-400">{{ patientData.length }} Patients</span>
                     </div>
-                    <Button class="bg-green-600 hover:bg-green-700">
+                    <Button class="bg-green-600 hover:bg-green-700" @click="openAddPatientDialog">
                         <Plus class="mr-2 h-4 w-4" />
                         Add Patient
                     </Button>
@@ -122,6 +145,21 @@ onMounted(async () => {
         </div>
     </AppLayout>
 
+    <!-- Add Patient Dialog -->
+    <Dialog v-model:open="showAddDialog">
+        <DialogContent class="sm:max-w-md">
+            <DialogHeader>
+                <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Add New Patient</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400">Create a new patient record and information.</p>
+            </DialogHeader>
+            <PatientForm
+                :patient="null"
+                @submit="submitPatientAddForm"
+                @close="closeAddDialog"
+            />
+        </DialogContent>
+    </Dialog>
+
     <!-- Edit Patient Dialog -->
     <Dialog v-model:open="showEditDialog">
         <DialogContent class="sm:max-w-md">
@@ -141,8 +179,8 @@ onMounted(async () => {
     <Dialog v-model:open="showSavedDialog">
         <DialogContent class="sm:max-w-md">
             <DialogHeader>
-                <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Patient Updated</h2>
-                <p class="text-sm text-slate-600 dark:text-slate-400">The patient has been successfully updated.</p>
+                <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Patient Saved</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400">The patient has been successfully saved.</p>
             </DialogHeader>
             <div class="flex justify-end">
                 <Button @click="closeSavedDialog" class="bg-green-600 hover:bg-green-700">OK</Button>

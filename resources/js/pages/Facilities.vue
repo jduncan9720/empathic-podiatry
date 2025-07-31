@@ -15,9 +15,10 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Facilities', href: '/facilities' },
 ];
 
-const { updateFacility, error } = useFacilityForm();
+const { updateFacility, submitFacility, error } = useFacilityForm();
 const facilityData = ref<Facility[]>([])
 const showEditDialog = ref(false);
+const showAddDialog = ref(false);
 const showSavedDialog = ref(false);
 const selectedFacility = ref<Facility | null>(null);
 
@@ -37,8 +38,19 @@ function openEditFacilityDialog(facility: Facility) {
     showEditDialog.value = true;
 }
 
+function openAddFacilityDialog() {
+    console.log('Open add facility dialog');
+    selectedFacility.value = null;
+    showAddDialog.value = true;
+}
+
 function closeEditDialog() {
     showEditDialog.value = false;
+    selectedFacility.value = null;
+}
+
+function closeAddDialog() {
+    showAddDialog.value = false;
     selectedFacility.value = null;
 }
 
@@ -51,6 +63,17 @@ async function submitFacilityEditForm(form: Record<string, unknown>) {
     try {
         await updateFacility(Number(selectedFacility.value.id), form);
         closeEditDialog();
+        showSavedDialog.value = true;
+        await refreshFacilityData()
+    } catch (e) {
+        console.error('Error submitting facility form:', e);
+    }
+}
+
+async function submitFacilityAddForm(form: Record<string, unknown>) {
+    try {
+        await submitFacility(form);
+        closeAddDialog();
         showSavedDialog.value = true;
         await refreshFacilityData()
     } catch (e) {
@@ -80,7 +103,7 @@ onMounted(async () => {
                         <Building2 class="h-4 w-4 text-blue-600 dark:text-blue-400" />
                         <span class="text-sm font-medium text-blue-600 dark:text-blue-400">{{ facilityData.length }} Facilities</span>
                     </div>
-                    <Button class="bg-blue-600 hover:bg-blue-700">
+                    <Button class="bg-blue-600 hover:bg-blue-700" @click="openAddFacilityDialog">
                         <Plus class="mr-2 h-4 w-4" />
                         Add Facility
                     </Button>
@@ -107,6 +130,21 @@ onMounted(async () => {
         </div>
     </AppLayout>
 
+    <!-- Add Facility Dialog -->
+    <Dialog v-model:open="showAddDialog">
+        <DialogContent class="sm:max-w-md">
+            <DialogHeader>
+                <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Add New Facility</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400">Create a new healthcare facility and its information.</p>
+            </DialogHeader>
+            <FacilityForm
+                :facility="null"
+                @submit="submitFacilityAddForm"
+                @close="closeAddDialog"
+            />
+        </DialogContent>
+    </Dialog>
+
     <!-- Edit Facility Dialog -->
     <Dialog v-model:open="showEditDialog">
         <DialogContent class="sm:max-w-md">
@@ -126,8 +164,8 @@ onMounted(async () => {
     <Dialog v-model:open="showSavedDialog">
         <DialogContent class="sm:max-w-md">
             <DialogHeader>
-                <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Facility Updated</h2>
-                <p class="text-sm text-slate-600 dark:text-slate-400">The facility has been successfully updated.</p>
+                <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Facility Saved</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400">The facility has been successfully saved.</p>
             </DialogHeader>
             <div class="flex justify-end">
                 <Button @click="closeSavedDialog" class="bg-green-600 hover:bg-green-700">OK</Button>
