@@ -147,7 +147,7 @@ onMounted(async () => {
 
     <!-- Add Patient Dialog -->
     <Dialog v-model:open="showAddDialog">
-        <DialogContent class="sm:max-w-md">
+        <DialogContent>
             <DialogHeader>
                 <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Add New Patient</h2>
                 <p class="text-sm text-slate-600 dark:text-slate-400">Create a new patient record and information.</p>
@@ -162,7 +162,7 @@ onMounted(async () => {
 
     <!-- Edit Patient Dialog -->
     <Dialog v-model:open="showEditDialog">
-        <DialogContent class="sm:max-w-md">
+        <DialogContent>
             <DialogHeader>
                 <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Edit Patient</h2>
                 <p class="text-sm text-slate-600 dark:text-slate-400">Update patient information and details.</p>
@@ -177,7 +177,7 @@ onMounted(async () => {
 
     <!-- Success Dialog -->
     <Dialog v-model:open="showSavedDialog">
-        <DialogContent class="sm:max-w-md">
+        <DialogContent>
             <DialogHeader>
                 <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Patient Saved</h2>
                 <p class="text-sm text-slate-600 dark:text-slate-400">The patient has been successfully saved.</p>

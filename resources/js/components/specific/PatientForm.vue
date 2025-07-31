@@ -60,27 +60,28 @@ onMounted(async () => {
 </script>
 
 <template>
-    <form @submit.prevent="handleSubmit">
-        <div class="flex flex-col gap-4">
+    <form @submit.prevent="handleSubmit" class="max-h-[70vh] overflow-y-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Row 1: Name and Facility -->
             <div class="flex flex-col gap-1">
-                <label for="name" class="font-medium">Patient Name</label>
+                <label for="name" class="font-medium text-sm">Patient Name</label>
                 <input
                     id="name"
                     v-model="form.name"
                     type="text"
                     placeholder="Patient Name"
                     required
-                    class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                    class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                 />
             </div>
             <div class="flex flex-col gap-1">
-                <label for="facility_id" class="font-medium">Facility</label>
+                <label for="facility_id" class="font-medium text-sm">Facility</label>
                 <select
                     id="facility_id"
                     v-model="form.facility_id"
                     required
                     :disabled="props.facilityReadonly"
-                    class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                    class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                 >
                     <option value="" disabled>Select a facility</option>
                     <option v-for="facility in facilities" :key="facility.id" :value="facility.id">
@@ -88,33 +89,37 @@ onMounted(async () => {
                     </option>
                 </select>
             </div>
+
+            <!-- Row 2: Date of Birth and Room Number -->
             <div class="flex flex-col gap-1">
-                <label for="date_of_birth" class="font-medium">Date of Birth</label>
+                <label for="date_of_birth" class="font-medium text-sm">Date of Birth</label>
                 <input
                     id="date_of_birth"
                     v-model="form.date_of_birth"
                     type="date"
                     placeholder="Date of Birth (YYYY-MM-DD)"
-                    class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                    class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                 />
             </div>
             <div class="flex flex-col gap-1">
-                <label for="room_number" class="font-medium">Room Number</label>
+                <label for="room_number" class="font-medium text-sm">Room Number</label>
                 <input
                     id="room_number"
                     v-model="form.room_number"
                     type="text"
                     placeholder="Room Number"
-                    class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                    class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                 />
             </div>
+
+            <!-- Row 3: Type of Consent and Primary Insurance -->
             <div class="flex flex-col gap-1">
-                <label for="type_of_consent" class="font-medium">Type of Consent</label>
+                <label for="type_of_consent" class="font-medium text-sm">Type of Consent</label>
                 <select
                     id="type_of_consent"
                     v-model="form.type_of_consent"
                     required
-                    class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                    class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                 >
                     <option value="" disabled>Select type of consent</option>
                     <option value="Resident Request">Resident Request</option>
@@ -122,12 +127,12 @@ onMounted(async () => {
                 </select>
             </div>
             <div class="flex flex-col gap-1">
-                <label for="primary_insurance" class="font-medium">Primary Insurance</label>
+                <label for="primary_insurance" class="font-medium text-sm">Primary Insurance</label>
                 <select
                     id="primary_insurance"
                     v-model="form.primary_insurance"
                     required
-                    class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                    class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                 >
                     <option value="" disabled>Select primary insurance</option>
                     <option value="Medicare">Medicare</option>
@@ -141,23 +146,25 @@ onMounted(async () => {
                     <option value="Molina">Molina</option>
                 </select>
             </div>
+
+            <!-- Row 4: Date Last Seen and Status -->
             <div class="flex flex-col gap-1">
-                <label for="date_last_seen" class="font-medium">Date Last Seen</label>
+                <label for="date_last_seen" class="font-medium text-sm">Date Last Seen</label>
                 <input
                     id="date_last_seen"
                     v-model="form.date_last_seen"
                     type="date"
                     placeholder="Date Last Seen (YYYY-MM-DD)"
-                    class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                    class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                 />
             </div>
             <div class="flex flex-col gap-1">
-                <label for="status" class="font-medium">Status</label>
+                <label for="status" class="font-medium text-sm">Status</label>
                 <select
                     id="status"
                     v-model="form.status"
                     required
-                    class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                    class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                 >
                     <option value="" disabled>Select status</option>
                     <option value="needs seen">Needs Seen</option>
@@ -168,12 +175,10 @@ onMounted(async () => {
                 </select>
             </div>
         </div>
-        <br>
-        <slot name="footer">
-            <div class="flex gap-2 justify-end">
-                <Button type="submit" class="btn btn-primary">Submit</Button>
-                <Button type="button" class="btn btn-outline" @click="handleClose">Cancel</Button>
-            </div>
-        </slot>
+        
+        <div class="mt-6 flex gap-2 justify-end">
+            <Button type="submit" class="btn btn-primary">Submit</Button>
+            <Button type="button" class="btn btn-outline" @click="handleClose">Cancel</Button>
+        </div>
     </form>
 </template>

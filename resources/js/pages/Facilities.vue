@@ -132,7 +132,7 @@ onMounted(async () => {
 
     <!-- Add Facility Dialog -->
     <Dialog v-model:open="showAddDialog">
-        <DialogContent class="sm:max-w-md">
+        <DialogContent>
             <DialogHeader>
                 <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Add New Facility</h2>
                 <p class="text-sm text-slate-600 dark:text-slate-400">Create a new healthcare facility and its information.</p>
@@ -147,7 +147,7 @@ onMounted(async () => {
 
     <!-- Edit Facility Dialog -->
     <Dialog v-model:open="showEditDialog">
-        <DialogContent class="sm:max-w-md">
+        <DialogContent>
             <DialogHeader>
                 <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Edit Facility</h2>
                 <p class="text-sm text-slate-600 dark:text-slate-400">Update facility information and details.</p>
@@ -162,7 +162,7 @@ onMounted(async () => {
 
     <!-- Success Dialog -->
     <Dialog v-model:open="showSavedDialog">
-        <DialogContent class="sm:max-w-md">
+        <DialogContent>
             <DialogHeader>
                 <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Facility Saved</h2>
                 <p class="text-sm text-slate-600 dark:text-slate-400">The facility has been successfully saved.</p>
