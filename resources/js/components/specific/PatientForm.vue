@@ -122,6 +122,7 @@ onMounted(async () => {
                     class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                 >
                     <option value="" disabled>Select type of consent</option>
+                    <option value="Needs Consent">Needs Consent</option>
                     <option value="Resident Request">Resident Request</option>
                     <option value="Physician Request">Physician Request</option>
                 </select>
@@ -135,6 +136,8 @@ onMounted(async () => {
                     class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                 >
                     <option value="" disabled>Select primary insurance</option>
+                    <option value="Aetna">Aetna</option>
+                    <option value="American Health Advantage of Utah">American Health Advantage of Utah</option>
                     <option value="Medicare">Medicare</option>
                     <option value="Medicaid">Medicaid</option>
                     <option value="Blue Cross Blue Shield">Blue Cross Blue Shield</option>
