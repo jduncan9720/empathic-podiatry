@@ -286,16 +286,13 @@ export const working_columns = (facilities: Facility[]): ColumnDef<Patient>[] =>
         cell: ({ row }) => h('div', { class: 'font-medium' }, row.getValue('name')),
     },
     {
-        accessorKey: 'date_of_birth',
-        header: () => h('div', {}, 'Date of Birth'),
-        cell: ({ row }) => {
-            const dateOfBirth = row.getValue('date_of_birth')
-            return h('div', { class: 'font-medium' }, String(dateOfBirth))
-        },
-    },
-    {
         accessorKey: 'room_number',
-        header: () => h('div', {}, 'Room Number'),
+        header: ({ column }) => {
+            return h(Button, {
+                variant: 'ghost',
+                onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
+            }, () => ['Room Number', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+        },
         cell: ({ row }) => {
             const roomNumber = row.getValue('room_number')
             return h('div', { class: 'font-medium' }, String(roomNumber))
