@@ -276,16 +276,6 @@ export interface Working {
 
 export const working_columns = (facilities: Facility[]): ColumnDef<Patient>[] => [
     {
-        accessorKey: 'id',
-        header: ({ column }) => {
-            return h(Button, {
-                variant: 'ghost',
-                onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
-            }, () => ['Id', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
-        },
-        cell: ({ row }) => h('div', { class: 'font-medium' }, row.getValue('id')),
-    },
-    {
         accessorKey: 'name',
         header: ({ column }) => {
             return h(Button, {
@@ -294,15 +284,6 @@ export const working_columns = (facilities: Facility[]): ColumnDef<Patient>[] =>
             }, () => ['Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }) => h('div', { class: 'font-medium' }, row.getValue('name')),
-    },
-    {
-        accessorKey: 'facility_id',
-        header: () => h('div', {}, 'Facility'),
-        cell: ({ row }) => {
-            const facilityId = row.getValue('facility_id');
-            const facility = facilities.find(f => f.id === facilityId);
-            return h('div', { class: 'font-medium' }, facility ? facility.name : 'Unknown');
-        },
     },
     {
         accessorKey: 'date_of_birth',

@@ -208,22 +208,46 @@ function togglePhysicianRequests() {
 }
 
 const sortedPatientData = computed(() => {
-    const data = [...patientData.value];
+    let data = [...patientData.value];
+    
+    // Filter data based on selected view
     if (showPhysicianRequests.value) {
+        // Show only physician request patients
+        data = data.filter(patient => patient.type_of_consent === 'Physician Request');
         data.sort((a, b) => {
             const aIsPhysician = a.type_of_consent === 'Physician Request' ? -1 : 1;
             const bIsPhysician = b.type_of_consent === 'Physician Request' ? -1 : 1;
             return aIsPhysician - bIsPhysician;
         });
     } else if (showNeedsSeen.value) {
+        // Show only patients that need to be seen (more than 60 days since last seen)
+        data = data.filter(patient => {
+            // Skip soft deleted patients
+            if (patient.deleted_at) return false;
+            
+            // Skip patients with "refused" status
+            if (patient.status === 'refused') return false;
+            
+            // Check if last seen is more than 60 days ago
+            const lastSeen = new Date(patient.date_last_seen + 'T00:00:00');
+            if (isNaN(lastSeen.getTime())) return true; // Invalid date, mark as needs seen
+            
+            const now = new Date();
+            const diffDays = (now.getTime() - lastSeen.getTime()) / (1000 * 60 * 60 * 24);
+            return diffDays > 60;
+        });
+        
+        // Sort by date_last_seen (oldest first - most urgent)
         data.sort((a, b) => {
-            if (!a.date_last_seen) return 1;
-            if (!b.date_last_seen) return -1;
+            if (!a.date_last_seen) return -1;
+            if (!b.date_last_seen) return 1;
             return a.date_last_seen.localeCompare(b.date_last_seen);
         });
     } else if (showAll.value) {
+        // Show all patients, sorted by ID
         data.sort((a, b) => Number(a.id) - Number(b.id));
     }
+    
     return data;
 });
 
